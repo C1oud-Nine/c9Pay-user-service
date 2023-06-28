@@ -29,8 +29,8 @@ public class UserController {
 
     @GetMapping("/check-duplicate")
     public ResponseEntity<?> checkDuplicated(HttpServletRequest request){
-        String userId = request.getHeader("userId");
-        log.info("User-ID: {}", userId);
+        boolean isDuplicated = userService.validateDuplicateUserId(request.getHeader("userId"));
+        if(isDuplicated) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok().build();
     }
 

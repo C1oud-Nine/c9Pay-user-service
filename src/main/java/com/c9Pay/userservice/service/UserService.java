@@ -17,13 +17,13 @@ public class UserService {
     @Transactional
     public void signUp(User user){
         //@TODO: feign Client(auth-service: 개체 식별번호 생성 요청, credit-service: 계좌 생성 요청)
-        if(!validateDuplicateUserId(user)) throw new IllegalStateException("이미 존재하는 회원입니다.");
+        if(validateDuplicateUserId(user.getUserId())) throw new IllegalStateException("이미 존재하는 회원입니다.");
         userRepository.save(user);
     }
 
-    public boolean validateDuplicateUserId(User user){
-        List<User> findUser = userRepository.findByUserId(user.getUserId());
-        return findUser.isEmpty();
+    public boolean validateDuplicateUserId(String userId){
+        List<User> findUser = userRepository.findByUserId(userId);
+        return !findUser.isEmpty();
     }
 
 }
