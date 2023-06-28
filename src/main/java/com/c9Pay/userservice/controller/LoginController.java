@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @Slf4j
 @RestController
-@RequestMapping("/user-service")
+@RequestMapping
 public class LoginController {
 
     @PostMapping("/login")
@@ -24,12 +24,6 @@ public class LoginController {
         Cookie auth = new Cookie("Auth", "dummyCookie");
         response.addCookie(auth);
         response.sendRedirect("/user-service/user");
-    }
-
-    @PostMapping("/user/signup")
-    public ResponseEntity<?> signUp(@RequestBody UserDto form){
-        //@TODO: feign Client(auth-service: 개체 식별번호 생성 요청, credit-service: 계좌 생성 요청)
-        return ResponseEntity.ok().build();
     }
 
 }
