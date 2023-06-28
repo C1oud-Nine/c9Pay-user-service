@@ -1,0 +1,18 @@
+### 회원가입
+POST {{user-api}}/user/signup
+Content-Type: application/json
+
+{
+  "userId":"test",
+  "username": "dummy",
+  "password": "test1234",
+  "email": "abd@gmail.com"
+}
+
+
+### 사용자 정보
+GET {{user-api}}/user
+
+
+### 아이디 중복 확인
+GET {{user-api}}/user/check-duplicate

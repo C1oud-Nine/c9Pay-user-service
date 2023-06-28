@@ -1,0 +1,2 @@
+### QR 생성 요청
+GET {{user-api}}/qr
