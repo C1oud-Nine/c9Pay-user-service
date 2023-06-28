@@ -23,6 +23,7 @@ public class LoginController {
     public void login(@RequestBody LoginForm form, HttpServletResponse response) throws IOException {
         Cookie auth = new Cookie("Auth", "dummyCookie");
         response.addCookie(auth);
+        //@TODO spring security에서 AuthenticationSuccessHandler 구현 필요
         response.sendRedirect("/user-service/user");
     }
 
