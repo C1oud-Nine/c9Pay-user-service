@@ -1,5 +1,6 @@
 package com.c9Pay.userservice.dto;
 
+import com.c9Pay.userservice.entity.User;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,5 +11,12 @@ public class UserDto {
     private String userId;
     private String password;
     private String email;
-    private Long credit;
+
+    public User toEntity(){
+        return User.builder()
+                .userId(userId)
+                .password(password)
+                .username(username)
+                .email(email).build();
+    }
 }
