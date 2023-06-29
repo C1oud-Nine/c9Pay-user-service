@@ -22,8 +22,7 @@ public class UserService {
     }
 
     public boolean validateDuplicateUserId(String userId){
-        List<User> findUser = userRepository.findByUserId(userId);
-        return !findUser.isEmpty();
+        return userRepository.findByUserId(userId).isPresent();
     }
 
 }
