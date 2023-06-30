@@ -1,6 +1,6 @@
-package com.c9Pay.userservice.controller;
+package com.c9Pay.userservice.web.controller;
 
-import com.c9Pay.userservice.dto.AuthForm;
+import com.c9Pay.userservice.web.dto.AuthForm;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

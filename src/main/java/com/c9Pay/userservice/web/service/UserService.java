@@ -1,12 +1,10 @@
-package com.c9Pay.userservice.service;
+package com.c9Pay.userservice.web.service;
 
 import com.c9Pay.userservice.entity.User;
-import com.c9Pay.userservice.repository.UserRepository;
+import com.c9Pay.userservice.web.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
