@@ -1,4 +1,4 @@
-package com.c9Pay.userservice.repository;
+package com.c9Pay.userservice.web.repository;
 
 
 import com.c9Pay.userservice.entity.User;

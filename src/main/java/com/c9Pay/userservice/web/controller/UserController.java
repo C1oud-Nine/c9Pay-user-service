@@ -1,8 +1,8 @@
-package com.c9Pay.userservice.controller;
+package com.c9Pay.userservice.web.controller;
 
 import com.c9Pay.userservice.entity.User;
-import com.c9Pay.userservice.dto.UserDto;
-import com.c9Pay.userservice.service.UserService;
+import com.c9Pay.userservice.web.dto.UserDto;
+import com.c9Pay.userservice.web.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
+
 
     @GetMapping
     public ResponseEntity<UserDto> getUserDetail(@CookieValue("Auth") String token){
@@ -45,4 +47,5 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
     }
+    
 }
