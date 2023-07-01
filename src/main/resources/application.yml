@@ -11,3 +11,5 @@ spring:
     hibernate:
       ddlAuto: create
     databasePlatform: org.hibernate.dialect.H2Dialect
+server:
+  port: 8083

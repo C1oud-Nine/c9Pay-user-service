@@ -6,3 +6,6 @@ Content-Type: application/json
   "constructor": "aa",
   "recognizer": "bb"
 }
+
+### 공개키 요청
+GET {{user-api}}/public-key
