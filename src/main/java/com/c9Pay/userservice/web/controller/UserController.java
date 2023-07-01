@@ -17,6 +17,8 @@ public class UserController {
 
     private final UserService userService;
 
+
+
     @GetMapping
     public ResponseEntity<UserDto> getUserDetail(@CookieValue("Auth") String token){
         UserDto dummy = UserDto.builder()
@@ -45,6 +47,5 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
     }
-
     
 }
