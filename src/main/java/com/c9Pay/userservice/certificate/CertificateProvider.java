@@ -3,6 +3,7 @@ package com.c9Pay.userservice.certificate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -14,6 +15,7 @@ import java.security.Signature;
 import java.util.Base64;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CertificateProvider {
@@ -38,11 +40,12 @@ public class CertificateProvider {
             cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPrivate());
             signature.initSign(keyPair.getPrivate());
 
+            //ciphertext
             byte[] encoded = cipher.doFinal(json);
 
             String certificate = new String(Base64.getEncoder().encode(encoded),
                     StandardCharsets.UTF_8);
-
+            //signatiure
             signature.update(encoded);
             String sign = new String(Base64.getEncoder().encode(signature.sign()));
 
@@ -64,6 +67,7 @@ public class CertificateProvider {
             byte[] sign = Base64.getDecoder().decode(encoded.getSign());
 
             if(signature.verify(sign)){
+                log.info("called");
                 cipher.init(Cipher.DECRYPT_MODE, keyPair.getPublic());
 
                 String json = new String(cipher.doFinal(messageEncoded), StandardCharsets.UTF_8);

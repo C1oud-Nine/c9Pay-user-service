@@ -9,3 +9,21 @@ Content-Type: application/json
 
 ### 공개키 요청
 GET {{user-api}}/public-key
+
+
+### 인증서 생성
+POST {{user-api}}/certificate
+Content-Type: application/json
+
+{
+  "serialNumber": "testSerialNumber"
+}
+
+### 인증서 검증
+POST  {{user-api}}/verify
+Content-Type: application/json
+
+{
+  "certificate": "mVCmO/fFX6CrC+gh7FsiFjngmc5aTdzxTudPxvCyIqoq9AM4wSo993kd+GKrTvWyWhgJ6aRsNhF3suRt6tYm4w+QqUhkOkvnKiYCOlMUlxDjErf97S7oXadoappUMr/+1iSpFsr6pV2mJjGO91toVMxLdHW3T8tdTWdmw3B0ukwxQM9NlL8xLTUU0L894SOxY8cS5+U08+xuygEfDZsvF+BJSKKHfta0kvCGlJlVTsTLHCN96Fe/gtq4RGNHDRAcgZUvU8dzCG0AeiL28+4KdCI7qnYr3jERIjD/GN4fzkBvy7IwSRAripe0XpTC3EkH3h6+u4brkb06ogfS6MQKhQ==",
+  "sign": "SXAvSrxu+NBDEHtgz+7ZFuIyujDAFNlUdTVOrV3FeKQrbxBU5iWKfddPSwxwXuTyxrmcZlxvMbkH8eT0CkELkgZgZOYAcd2+x+rzVuArRHQPTWG2kifXMvbgf8EhjVvpkNbrMMAZSZjgvks5ZjmZ3Eqb01oo8MQB4WmV1ant3PLpGUnYje5LvaV6pQsTImPzr3EfpSpR3lvPCcUSQjMCjcsM4XDkMN02ZIuBIIgDE965NzlmAGq4meHAJEAA8egAPXy93tPLq90HFdDE2Ckt1ToRFxmWEIw4uO49ieWNPLCSJbJbciwyX93DpaKzm2/xSANbNZUrGGbrICbnvprIcA=="
+}
