@@ -13,3 +13,13 @@ spring:
     databasePlatform: org.hibernate.dialect.H2Dialect
 server:
   port: 8083
+
+
+jwt:
+  time: 3600
+  service-type: user
+  secret: NOMICQfN9yvICPRpHvDM8ItRjN2x059R9OeHRR16bM9eam8sXcb0RKjye8elJYtgXp+VbWCPf3LwtpHIOu4d/g==
+
+logging:
+  level:
+    com.c9Pay.userservice: debug
