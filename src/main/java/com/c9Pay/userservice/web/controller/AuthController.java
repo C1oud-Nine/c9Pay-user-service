@@ -41,10 +41,10 @@ public class AuthController {
     @PostMapping("/certificate")
     public ResponseEntity<CertificateResponse> createCertificate(@RequestBody CertificateForm form){
         Optional<Certificate> nullable = certificateProvider.getCertificate(form);
-
         return nullable
-                .map(certificate ->
-                        ResponseEntity.ok(new CertificateResponse(certificate.getCertificate(), certificate.getSign())))
+                .map(certificate ->{
+                    return ResponseEntity.ok(new CertificateResponse(certificate.getCertificate(), certificate.getSign()));
+                    })
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 

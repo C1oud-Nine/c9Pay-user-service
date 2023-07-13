@@ -4,6 +4,10 @@ import com.c9Pay.userservice.entity.User;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.UUID;
+
+import static java.util.UUID.randomUUID;
+
 @Data
 @Builder
 public class UserDto {
@@ -18,6 +22,7 @@ public class UserDto {
                 .credit(0L)
                 .password(password)
                 .username(username)
+                .serialNumber(randomUUID())
                 .email(email).build();
     }
 }

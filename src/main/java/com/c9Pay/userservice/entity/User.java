@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Getter
 @Table(name= "users")
@@ -30,8 +32,8 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-    //@Column(nullable = false)
-    private String serialNumber;
+    @Column(nullable = false)
+    private UUID serialNumber;
 
 
     private Long credit;
