@@ -1,15 +1,11 @@
 package com.c9Pay.userservice.web.controller;
 
-import com.c9Pay.userservice.entity.User;
 import com.c9Pay.userservice.jwt.TokenProvider;
-import com.c9Pay.userservice.web.controller.LoginController;
-import com.c9Pay.userservice.web.dto.LoginForm;
-import com.c9Pay.userservice.web.dto.UserDto;
+import com.c9Pay.userservice.web.dto.user.LoginForm;
 import com.c9Pay.userservice.web.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,10 +13,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -59,7 +56,8 @@ public class LoginControllerTest {
         String token = "dummy-token";
 
         when(userService.authenticate(form.getUserId(), form.getPassword())).thenReturn(userId);
-        when(tokenProvider.createToken(userId)).thenReturn(token);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userId, "");
+        //when(tokenProvider.createToken(authentication, request.getRemoteAddr())).thenReturn(token);
 
         ResponseEntity<String> responseEntity = loginController.login(form, request,response);
 

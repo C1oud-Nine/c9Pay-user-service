@@ -1,4 +1,4 @@
-package com.c9Pay.userservice.web.dto;
+package com.c9Pay.userservice.web.dto.credit;
 
 import lombok.Data;
 

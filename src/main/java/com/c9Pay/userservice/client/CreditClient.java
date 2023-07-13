@@ -1,6 +1,6 @@
 package com.c9Pay.userservice.client;
 
-import com.c9Pay.userservice.web.dto.ChargeDetail;
+import com.c9Pay.userservice.web.dto.credit.ChargeDetail;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
