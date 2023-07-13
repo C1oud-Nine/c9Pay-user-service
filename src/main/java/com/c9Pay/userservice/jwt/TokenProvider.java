@@ -29,10 +29,9 @@ public class TokenProvider {
 
     private final String SERVICE_TYPE= "type";
 
-    private final String IP_ADDR= "ip";
 
 
-    public TokenProvider(@Value("${jwt.secret") String secret,
+    public TokenProvider(@Value("${jwt.secret}") String secret,
                          @Value("%{jwt.service-type") String serviceType,
                          @Value("${jwt.time}") long tokenValidateTime){
         this.serviceType = serviceType;
@@ -41,12 +40,9 @@ public class TokenProvider {
         this.algorithm = Algorithm.HMAC512(keyBytes);
     }
 
-    public String createToken(Long dbId){
-        long now = System.currentTimeMillis();
-
-
+    public String createToken(Authentication authentication){
         return JWT.create()
-                .withSubject(dbId.toString())
+                .withSubject(authentication.getName())
                 .withClaim(SERVICE_TYPE, serviceType)
                 .withExpiresAt(Instant.ofEpochMilli(System.currentTimeMillis() + tokenValidateInSeconds * 1000))
                 .sign(algorithm);
@@ -56,9 +52,8 @@ public class TokenProvider {
         DecodedJWT decodedJWT=  JWT.decode(token);
         String sub = decodedJWT.getSubject();
         String type = decodedJWT.getClaim(SERVICE_TYPE).as(String.class);
-        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(type));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(type), new SimpleGrantedAuthority("ROLE_USER"));
         User principle = new User(sub, "", authorities);
-
         return new UsernamePasswordAuthenticationToken(principle, token, authorities);
     }
 
@@ -67,19 +62,8 @@ public class TokenProvider {
             JWTVerifier.BaseVerification verification = (JWTVerifier.BaseVerification) JWT.require(algorithm)
                     .withClaimPresence(SERVICE_TYPE)
                     .acceptExpiresAt(tokenValidateInSeconds);
-
             JWTVerifier verifier = verification.build(Clock.systemUTC());
-
-            DecodedJWT decodedJWT = verifier.verify(token);
-
-            if(decodedJWT.getClaim(SERVICE_TYPE).as(String.class).equals(serviceType)){
-                String ipAddr = decodedJWT.getClaim(IP_ADDR).as(String.class);
-                if(!ipAddr.equals(request.getRemoteAddr())){
-                    log.debug("Store token ip is different. expected: {}, actual: {}", ipAddr, request.getRemoteAddr());
-                    return false;
-                }
-            }
-
+            verifier.verify(token);
             return true;
         }catch (JWTVerificationException e){
             log.debug("auth fail reason: {}", e.getMessage());
