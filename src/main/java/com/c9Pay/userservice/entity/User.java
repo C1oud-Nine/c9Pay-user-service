@@ -1,5 +1,6 @@
 package com.c9Pay.userservice.entity;
 
+import com.c9Pay.userservice.web.dto.user.UserUpdateParam;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,4 +38,11 @@ public class User {
 
 
     private Long credit;
+
+    public void updateUser(UserUpdateParam param) {
+        this.email = param.getEmail();
+        this.password = param.getPassword();
+        this.userId = param.getUserId();
+        this.username = param.getUsername();
+    }
 }

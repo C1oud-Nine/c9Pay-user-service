@@ -1,4 +1,9 @@
 spring:
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+
   h2:
     console:
       enabled: true
@@ -7,18 +12,21 @@ spring:
     url: jdbc:h2:tcp://localhost/~/user-service
     username: sa
     password: 123
+
   jpa:
     hibernate:
-      ddlAuto: create
+      ddlAuto: create-drop
     databasePlatform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
 server:
   port: 8083
+
 
 
 jwt:
   time: 3600
   service-type: user
-  secret: NOMICQfN9yvICPRpHvDM8ItRjN2x059R9OeHRR16bM9eam8sXcb0RKjye8elJYtgXp+VbWCPf3LwtpHIOu4d/g==
+  secret: REVGQVVMVERFRkFVTFRERUZBVUxUREVGQVVMVERFRkFVTFRERUZBVUxUREVGQVVMVERFRkFVTFRERUZBVUxUREVGQVVMVA==
 
 logging:
   level:

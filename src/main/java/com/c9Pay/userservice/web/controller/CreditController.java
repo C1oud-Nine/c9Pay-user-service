@@ -1,6 +1,6 @@
 package com.c9Pay.userservice.web.controller;
 
-import com.c9Pay.userservice.web.dto.ChargeDetail;
+import com.c9Pay.userservice.web.dto.credit.ChargeDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;

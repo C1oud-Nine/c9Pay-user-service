@@ -1,4 +1,4 @@
-package com.c9Pay.userservice.web.dto;
+package com.c9Pay.userservice.web.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

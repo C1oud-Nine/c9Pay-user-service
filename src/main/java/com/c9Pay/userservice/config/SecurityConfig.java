@@ -1,5 +1,7 @@
 package com.c9Pay.userservice.config;
 
+import com.c9Pay.userservice.jwt.JwtFilter;
+import com.c9Pay.userservice.jwt.JwtSecurityConfig;
 import com.c9Pay.userservice.jwt.TokenProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.beans.JavaBean;
 
@@ -21,8 +24,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, TokenProvider tokenProvider) throws Exception {
         return http
                 .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))
+                .authorizeHttpRequests((auth) -> auth.requestMatchers("/user-service/test").hasRole("USER"))
                 .authorizeHttpRequests((auth) -> auth.requestMatchers("/**").permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

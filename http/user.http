@@ -5,7 +5,7 @@ Content-Type: application/json
 {
   "userId":"test",
   "username": "dummy",
-  "password": "test1234",
+  "password": "test123",
   "email": "abd@gmail.com"
 }
 
@@ -13,7 +13,11 @@ Content-Type: application/json
 ### 사용자 정보
 GET {{user-api}}/user
 
-
 ### 아이디 중복 확인
 GET {{user-api}}/user/check-duplicate
 userId: test
+
+
+### 사용자 조회
+GET {{user-api}}/user
+
