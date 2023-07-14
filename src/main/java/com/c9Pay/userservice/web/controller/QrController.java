@@ -30,7 +30,7 @@ public class QrController {
     @GetMapping("/qr")
     public ResponseEntity<CertificateResponse> createQr(@CookieValue(AUTHORIZATION_HEADER) String token){
 
-        Authentication authentication = tokenProvider.getAuthentication(token);
+        Authentication authentication = tokenProvider.getAuthentication(token.substring(7));
         User findId = userService.findById(Long.valueOf(authentication.getName()));
         UUID serialNumber = findId.getSerialNumber();
         certificateProvider.getCertificate(serialNumber);

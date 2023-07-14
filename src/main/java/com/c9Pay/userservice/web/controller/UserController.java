@@ -1,6 +1,7 @@
 package com.c9Pay.userservice.web.controller;
 
 import com.c9Pay.userservice.entity.User;
+import com.c9Pay.userservice.web.exception.IllegalTokenDetailException;
 import com.c9Pay.userservice.jwt.TokenProvider;
 import com.c9Pay.userservice.web.dto.user.UserDto;
 import com.c9Pay.userservice.web.dto.user.UserUpdateParam;
@@ -28,79 +29,54 @@ public class UserController {
     @GetMapping
     public ResponseEntity<UserDto> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
 
-        try{
-            Authentication authentication = parseToken(token);
-            Long targetId = Long.valueOf(authentication.getName());
-            User findUser = userService.findById(targetId);
-            UserDto dto = UserDto.builder()
-                    .userId(findUser.getUserId())
-                    .email(findUser.getEmail())
-                    .username(findUser.getUsername())
-                    .password(findUser.getPassword())
-                    .build();
-            return ResponseEntity.ok(dto);
+        Authentication authentication = parseToken(token);
+        Long targetId = Long.valueOf(authentication.getName());
+        User findUser = userService.findById(targetId);
+        UserDto dto = UserDto.builder()
+                .userId(findUser.getUserId())
+                .email(findUser.getEmail())
+                .username(findUser.getUsername())
+                .password(findUser.getPassword())
+                .build();
+        return ResponseEntity.ok(dto);
 
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
     }
 
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token){
-        try{
-            Authentication authentication = parseToken(token);
-            Long targetId = Long.valueOf(authentication.getName());
-            userService.deleteUserById(targetId);
-            //@TODO: 사용자 탈퇴시 credit service의 계좌 삭제 요청
-            return ResponseEntity.ok("삭제 요청 성공.");
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
+        Authentication authentication = parseToken(token);
+        Long targetId = Long.valueOf(authentication.getName());
+        userService.deleteUserById(targetId);
+        //@TODO: 사용자 탈퇴시 credit service의 계좌 삭제 요청
+        return ResponseEntity.ok("삭제 요청 성공.");
     }
 
     @PutMapping
     public ResponseEntity<?> updateUserInfo(@CookieValue(AUTHORIZATION_HEADER) String token, @RequestBody UserUpdateParam param){
-        try{
-            Authentication authentication = parseToken(token);
-            Long targetId = Long.valueOf(authentication.getName());
-            userService.updateUserById(targetId, param);
-            return ResponseEntity.ok(param);
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
-
+        Authentication authentication = parseToken(token);
+        Long targetId = Long.valueOf(authentication.getName());
+        userService.updateUserById(targetId, param);
+        return ResponseEntity.ok(param);
     }
 
     @GetMapping("/serial-number")
     public ResponseEntity<?> getSerialNumber(@CookieValue(AUTHORIZATION_HEADER) String token){
-        try{
-            Authentication authentication = parseToken(token);
-            User findUser = userService.findById(Long.valueOf(authentication.getName()));
-            return ResponseEntity.ok(findUser.getSerialNumber());
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
+        Authentication authentication = parseToken(token);
+        User findUser = userService.findById(Long.valueOf(authentication.getName()));
+        return ResponseEntity.ok(findUser.getSerialNumber());
     }
 
     @GetMapping("/check-duplicate")
     public ResponseEntity<?> checkDuplicated(HttpServletRequest request){
-        boolean isDuplicated = userService.validateDuplicateUserId(request.getHeader("userId"));
-        if(isDuplicated) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok().build();
+
+        return userService.validateDuplicateUserId(request.getHeader("userId"))?
+        ResponseEntity.ok().build(): ResponseEntity.badRequest().build();
     }
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDto form){
-        try{
-            User joinUser = form.toEntity();
-            userService.signUp(joinUser);
-            return ResponseEntity.ok().build();
-        }catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+        User joinUser = form.toEntity();
+        userService.signUp(joinUser);
+        return ResponseEntity.ok().build();
     }
 
     private Authentication parseToken(String token) {
@@ -108,6 +84,6 @@ public class UserController {
             String parsedToken = token.substring(7);
             return tokenProvider.getAuthentication(parsedToken);
         }
-        throw new IllegalStateException("잘못된 토큰");
+        throw new IllegalTokenDetailException();
     }
 }
