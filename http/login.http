@@ -3,6 +3,6 @@ POST {{user-api}}/login
 Content-Type: application/json
 
 {
-  "userId": "test",
-  "password": "test123"
+  "userId": "aa",
+  "password": "bb"
 }

@@ -30,16 +30,12 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginForm form,  HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try{
-            Long id = userService.authenticate(form.getUserId(), form.getPassword());
-            Authentication authentication = new UsernamePasswordAuthenticationToken(id, "");
-            String token = tokenProvider.createToken(authentication);
-            response.addCookie(new Cookie(AUTHORIZATION_HEADER, "Bearer+"+token));
-            log.debug("token: {}", token);
-            return ResponseEntity.ok("로그인 성공");
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Long id = userService.authenticate(form.getUserId(), form.getPassword());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(id, "");
+        String token = tokenProvider.createToken(authentication);
+        response.addCookie(new Cookie(AUTHORIZATION_HEADER, "Bearer+"+token));
+        log.debug("token: {}", token);
+        return ResponseEntity.ok("로그인 성공");
+
     }
 }
