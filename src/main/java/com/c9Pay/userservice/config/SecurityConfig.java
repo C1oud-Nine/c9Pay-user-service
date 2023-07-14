@@ -24,7 +24,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, TokenProvider tokenProvider) throws Exception {
         return http
                 .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))
-                .authorizeHttpRequests((auth) -> auth.requestMatchers("/user-service/test").hasRole("USER"))
                 .authorizeHttpRequests((auth) -> auth.requestMatchers("/**").permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)

@@ -10,8 +10,8 @@ spring:
       path: /h2-console
   datasource:
     url: jdbc:h2:tcp://localhost/~/user-service
-    username: sa
-    password: 123
+    username: ENC(yrUMw+QE8Br4j+ZJf5R/RA==)
+    password: ENC(qyVsfasFWRdgcYn/XoQVqg==)
 
   jpa:
     hibernate:
@@ -24,9 +24,9 @@ server:
 
 
 jwt:
-  time: 1800
-  service-type: user
-  secret: REVGQVVMVERFRkFVTFRERUZBVUxUREVGQVVMVERFRkFVTFRERUZBVUxUREVGQVVMVERFRkFVTFRERUZBVUxUREVGQVVMVA==
+  time: ENC(fUvyjIJO2khbDxBL+a+pfg==)
+  service-type: ENC(9vruXpL+mRox/n5yyNkQmg==)
+  secret: ENC(50PmC8wTPcUAcv8fh1XLM+eMhqMQsOuNhOJG3X8wgJ4HP62Q8h8+FlIlvUV81cifTkH+ym7RkB3lzOJJ4MX5WJ0QjvN1y2B/AKyQGNZvFD9/zp2G29osZKQX/ZtkR4OzjSMTpOaofZEJnG1L3+Ha5Q==)
 
 logging:
   level:
