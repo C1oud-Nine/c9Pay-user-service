@@ -12,12 +12,14 @@ Content-Type: application/json
 
 ### 사용자 정보
 GET {{user-api}}/user
+cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2ODkzMTE5MTR9.IESAgQN1l2rXFqk7WxpEfldNCUB9cvpcE9aEu0srEcoUq7eoWh4Y4NO21blTFXYzAQU7RlZ8IHTf8DsaPLdmkA
 
 ### 아이디 중복 확인
 GET {{user-api}}/user/check-duplicate
 userId: test
 
 
-### 사용자 조회
-GET {{user-api}}/user
+### 사용자 개체 식별번호 조회
+GET {{user-api}}/user/serial-number
+cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2ODkzMTE5MTR9.IESAgQN1l2rXFqk7WxpEfldNCUB9cvpcE9aEu0srEcoUq7eoWh4Y4NO21blTFXYzAQU7RlZ8IHTf8DsaPLdmkA
 

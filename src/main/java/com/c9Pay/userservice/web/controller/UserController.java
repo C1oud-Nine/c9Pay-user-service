@@ -66,12 +66,24 @@ public class UserController {
             Authentication authentication = parseToken(token);
             Long targetId = Long.valueOf(authentication.getName());
             userService.updateUserById(targetId, param);
-            return ResponseEntity.ok("수정 요청 성공");
+            return ResponseEntity.ok(param);
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
 
+    }
+
+    @GetMapping("/serial-number")
+    public ResponseEntity<?> getSerialNumber(@CookieValue(AUTHORIZATION_HEADER) String token){
+        try{
+            Authentication authentication = parseToken(token);
+            User findUser = userService.findById(Long.valueOf(authentication.getName()));
+            return ResponseEntity.ok(findUser.getSerialNumber());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/check-duplicate")

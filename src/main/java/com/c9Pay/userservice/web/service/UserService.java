@@ -1,6 +1,7 @@
 package com.c9Pay.userservice.web.service;
 
 import com.c9Pay.userservice.entity.User;
+import com.c9Pay.userservice.web.dto.user.UserDto;
 import com.c9Pay.userservice.web.dto.user.UserUpdateParam;
 import com.c9Pay.userservice.web.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -53,4 +54,6 @@ public class UserService {
     public User findById(Long id){
         return userRepository.findById(id).orElse(null);
     }
+
+
 }
