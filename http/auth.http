@@ -11,13 +11,6 @@ Content-Type: application/json
 GET {{user-api}}/public-key
 
 
-### 인증서 생성
-POST {{user-api}}/certificate
-Content-Type: application/json
-
-{
-  "serialNumber": "testSerialNumber"
-}
 
 ### 인증서 검증
 POST  {{user-api}}/verify
