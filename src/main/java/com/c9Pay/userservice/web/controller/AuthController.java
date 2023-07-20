@@ -19,12 +19,12 @@ import java.util.Base64;
 public class AuthController {
 
     private final CertificateProvider certificateProvider;
-    @PostMapping("/auth")
+    @PostMapping("/internal/auth")
     public ResponseEntity<?> authenticationResponse(@RequestBody AuthForm form){
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/public-key")
+    @GetMapping("/internal/public-key")
     public ResponseEntity<PublicKeyResponse> getPublicKey(){
         PublicKey publicKey = certificateProvider.getPublicKey();
 

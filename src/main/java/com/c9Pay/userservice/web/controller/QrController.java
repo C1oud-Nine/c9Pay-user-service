@@ -27,7 +27,7 @@ public class QrController {
     private final CertificateProvider certificateProvider;
     private final TokenProvider tokenProvider;
     private final UserService userService;
-    @GetMapping("/qr")
+    @GetMapping("/internal/qr")
     public ResponseEntity<CertificateResponse> createQr(@CookieValue(AUTHORIZATION_HEADER) String token){
 
         Authentication authentication = tokenProvider.getAuthentication(token.substring(7));

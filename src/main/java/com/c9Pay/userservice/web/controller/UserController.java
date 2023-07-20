@@ -18,7 +18,7 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;

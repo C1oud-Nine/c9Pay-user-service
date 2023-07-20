@@ -28,7 +28,7 @@ public class LoginController {
     private final TokenProvider tokenProvider;
     private final UserService userService;
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<String> login(@RequestBody LoginForm form,  HttpServletRequest request, HttpServletResponse response) throws IOException {
         Long id = userService.authenticate(form.getUserId(), form.getPassword());
         Authentication authentication = new UsernamePasswordAuthenticationToken(id, "");
