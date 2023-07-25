@@ -24,14 +24,4 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/internal/public-key")
-    public ResponseEntity<PublicKeyResponse> getPublicKey(){
-        PublicKey publicKey = certificateProvider.getPublicKey();
-
-        String base64Encoded = new String(Base64.getEncoder().encode(publicKey.getEncoded()),
-                StandardCharsets.UTF_8);
-
-        return ResponseEntity.ok(new PublicKeyResponse(base64Encoded));
-    }
-
 }
