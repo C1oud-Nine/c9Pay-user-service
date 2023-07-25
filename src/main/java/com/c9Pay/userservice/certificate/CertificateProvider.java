@@ -55,32 +55,4 @@ public class CertificateProvider {
         }
     }
 
-    public <T> Optional<T> decrypt(Certificate encoded, Class<T> type){
-        Cipher cipher = keyAlgorithm.getCipher();
-        Signature signature = keyAlgorithm.getSignature();
-
-        try{
-            byte[] messageEncoded = Base64.getDecoder().decode(encoded.getCertificate().getBytes(StandardCharsets.UTF_8));
-
-            signature.initVerify(keyPair.getPublic());
-            signature.update(messageEncoded);
-            byte[] sign = Base64.getDecoder().decode(encoded.getSign());
-
-            if(signature.verify(sign)){
-                log.info("called");
-                cipher.init(Cipher.DECRYPT_MODE, keyPair.getPublic());
-
-                String json = new String(cipher.doFinal(messageEncoded), StandardCharsets.UTF_8);
-                T obj = objectMapper.readValue(json, type);
-                return Optional.of(obj);
-            }
-            else{
-                return Optional.empty();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public PublicKey getPublicKey(){ return keyPair.getPublic();}
 }
