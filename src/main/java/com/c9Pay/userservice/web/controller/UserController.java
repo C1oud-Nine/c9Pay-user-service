@@ -74,8 +74,10 @@ public class UserController {
     }
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDto form){
+        log.info("Starting registration for a new user account");
         User joinUser = form.toEntity();
         userService.signUp(joinUser);
+        log.info("Registration success");
         return ResponseEntity.ok().build();
     }
 

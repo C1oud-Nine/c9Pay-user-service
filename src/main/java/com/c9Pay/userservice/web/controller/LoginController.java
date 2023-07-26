@@ -30,12 +30,10 @@ public class LoginController {
 
     @PostMapping("/api/login")
     public ResponseEntity<String> login(@RequestBody LoginForm form,  HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.info("Starting registration for a new user account");
         Long id = userService.authenticate(form.getUserId(), form.getPassword());
         Authentication authentication = new UsernamePasswordAuthenticationToken(id, "");
         String token = tokenProvider.createToken(authentication);
         response.addCookie(new Cookie(AUTHORIZATION_HEADER, "Bearer+"+token));
-        log.info("Registration success");
         return ResponseEntity.ok("로그인 성공");
 
     }
