@@ -1,9 +1,10 @@
 spring:
+  application:
+    name: user-service
   sql:
     init:
       mode: always
       data-locations: classpath:data.sql
-
   h2:
     console:
       enabled: true
@@ -31,3 +32,16 @@ jwt:
 logging:
   level:
     com.c9Pay.userservice: debug
+  pattern:
+    level: "%5p [${spring.application.name},%X{traceId:-},%X{spanId:-}]"
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      consume: b3, w3c
+      produce: b3, w3c
+  zipkin:
+    tracing:
+      endpoint: "http://localhost:9411/api/v2/spans"
