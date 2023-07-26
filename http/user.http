@@ -1,6 +1,6 @@
 
 ### 사용자 정보 업데이트
-PUT {{user-api}}/user
+PUT {{user-api}}/api/user
 cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2ODkzMTE5MTR9.IESAgQN1l2rXFqk7WxpEfldNCUB9cvpcE9aEu0srEcoUq7eoWh4Y4NO21blTFXYzAQU7RlZ8IHTf8DsaPLdmkA
 
 
