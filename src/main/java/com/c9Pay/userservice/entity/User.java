@@ -37,8 +37,6 @@ public class User extends BaseTimeEntity {
     private UUID serialNumber;
 
 
-    private Long credit;
-
     public void updateUser(UserUpdateParam param) {
         this.email = param.getEmail();
         this.password = param.getPassword();

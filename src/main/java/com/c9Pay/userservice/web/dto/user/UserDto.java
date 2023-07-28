@@ -19,7 +19,6 @@ public class UserDto {
     public User toEntity(){
         return User.builder()
                 .userId(userId)
-                .credit(0L)
                 .password(password)
                 .username(username)
                 .serialNumber(randomUUID())

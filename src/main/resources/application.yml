@@ -16,7 +16,7 @@ spring:
 
   jpa:
     hibernate:
-      ddlAuto: create-drop
+      ddlAuto: create
     databasePlatform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
 server:
