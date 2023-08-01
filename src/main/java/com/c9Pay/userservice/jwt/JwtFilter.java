@@ -49,7 +49,6 @@ public class JwtFilter implements Filter {
             bearerToken = Arrays.stream(request.getCookies()).filter((cookie -> cookie.getName().equals(AUTHORIZATION_HEADER)))
                     .findFirst().map(cookie -> cookie.getValue()).orElse(null);
         }
-        log.debug("쿠키의 토큰 : {}", bearerToken);
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer+")){
             bearerToken = URLDecoder.decode(bearerToken, UTF_8);
             log.debug("해더의 토큰 {}", bearerToken);

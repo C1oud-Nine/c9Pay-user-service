@@ -1,17 +1,24 @@
 
 ### 사용자 정보 업데이트
 PUT {{user-api}}/api/user
-cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2ODkzMTE5MTR9.IESAgQN1l2rXFqk7WxpEfldNCUB9cvpcE9aEu0srEcoUq7eoWh4Y4NO21blTFXYzAQU7RlZ8IHTf8DsaPLdmkA
+Content-Type: application/json
+cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2OTA5MzExODh9.3EgEClidLpwZ4oyY_mETnCvrawlhESgKXeXiS3SbpU-dUAGdF8ObmQYkdUZadgf_jihD7l5QaKoUh1yqDzH9Ig
 
+{
+  "username": "vv",
+  "email":"aaa@bbb.ccc",
+  "userId": "vvv",
+  "password": "v2v"
+}
 
 ### 회원가입
 POST {{user-api}}/api/user/signup
 Content-Type: application/json
 
 {
-  "userId":"test",
+  "userId":"vv1",
   "username": "dummy",
-  "password": "test123",
+  "password": "vv",
   "email": "abd@gmail.com"
 }
 
@@ -31,4 +38,4 @@ cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2Ii
 
 ### 사용자 삭제
 DELETE {{user-api}}/api/user
-cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2ODkzMTE5MTR9.IESAgQN1l2rXFqk7WxpEfldNCUB9cvpcE9aEu0srEcoUq7eoWh4Y4NO21blTFXYzAQU7RlZ8IHTf8DsaPLdmkA
+cookie:  Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2OTA5MzE5MjJ9.5gCpJGg0YXZUXZfuI2fCBdGLcWcyA50d-bb01Nzd-kU-V8ZkHdMZC4GjwcZSpRIvApmA-1AZlP3A0b1qnlkn-g

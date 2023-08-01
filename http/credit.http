@@ -1,7 +1,8 @@
 ### 크레딧 충전 요청
-POST {{user-api}}/credit
+POST {{user-api}}/api/credit
 Content-Type: application/json
+Cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2OTA5Mjk2MTd9.PQY7xnkamXeMwjnQnRLM8YyVuLXS0D_0kG3TKFk4BN_CSx7mjSCHJOGj8XbcF8jf_da_Pjc479RZDqLsfPbC-Q
 
 {
-  "quantity": 1234
+  "quantity": 10000
 }

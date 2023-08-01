@@ -1,18 +1,14 @@
 package com.c9Pay.userservice.client;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.c9Pay.userservice.web.dto.auth.SerialNumberResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name="auth-service")
+@FeignClient(name="auth-service", url="${AUTH_SERVICE_URI:http://localhost}:8081")
 public interface AuthClient {
 
     @PostMapping("/auth-service/serial-number")
-    Object createSerialNumber(@RequestBody Object responseAddress);
+    ResponseEntity<SerialNumberResponse> createSerialNumber();
 
-    @GetMapping("/auth-service/verify-code")
-    Object createVerifyCode(HttpServletRequest request, HttpServletResponse response);
 }
