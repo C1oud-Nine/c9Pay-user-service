@@ -50,8 +50,12 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token){
         Authentication authentication = parseToken(token);
         Long targetId = Long.valueOf(authentication.getName());
+        String serialNumber = userService
+                .findById(Long.valueOf(authentication.getName()))
+                .getSerialNumber().toString();
+
         userService.deleteUserById(targetId);
-        //@TODO: 사용자 탈퇴시 credit service의 계좌 삭제 요청
+        creditClient.deleteAccount(serialNumber);
         return ResponseEntity.ok("삭제 요청 성공.");
     }
 
