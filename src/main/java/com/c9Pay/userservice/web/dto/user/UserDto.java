@@ -16,12 +16,12 @@ public class UserDto {
     private String password;
     private String email;
 
-    public User toEntity(){
+    public User toEntity(UUID serialNumber){
         return User.builder()
                 .userId(userId)
                 .password(password)
                 .username(username)
-                .serialNumber(randomUUID())
+                .serialNumber(serialNumber)
                 .email(email).build();
     }
 }

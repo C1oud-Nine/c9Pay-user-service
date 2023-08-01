@@ -1,10 +1,14 @@
 package com.c9Pay.userservice.web.controller;
 
+import com.c9Pay.userservice.client.AuthClient;
+import com.c9Pay.userservice.client.CreditClient;
 import com.c9Pay.userservice.entity.User;
+import com.c9Pay.userservice.web.dto.auth.SerialNumberResponse;
 import com.c9Pay.userservice.web.exception.IllegalTokenDetailException;
 import com.c9Pay.userservice.jwt.TokenProvider;
 import com.c9Pay.userservice.web.dto.user.UserDto;
 import com.c9Pay.userservice.web.dto.user.UserUpdateParam;
+import com.c9Pay.userservice.web.exception.handler.TokenGenerationFailureException;
 import com.c9Pay.userservice.web.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +24,9 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
-
+    private final CreditClient creditClient;
+    private final AuthClient authClient;
     private final UserService userService;
-
     private final TokenProvider tokenProvider;
 
 
@@ -75,7 +79,12 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDto form){
         log.info("Starting registration for a new user account");
-        User joinUser = form.toEntity();
+        SerialNumberResponse serialNumberResponse = authClient.createSerialNumber().getBody();
+        if(serialNumberResponse == null) throw new TokenGenerationFailureException();
+        String serialNumber = serialNumberResponse.getSerialNumber().toString();
+        log.info("Entity identification number generation:{}", serialNumber);
+        creditClient.createAccount(serialNumber);
+        User joinUser = form.toEntity(serialNumberResponse.getSerialNumber());
         userService.signUp(joinUser);
         log.info("Registration success");
         return ResponseEntity.ok().build();
