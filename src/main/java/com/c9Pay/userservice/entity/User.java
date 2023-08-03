@@ -43,4 +43,7 @@ public class User extends BaseTimeEntity {
         this.userId = param.getUserId();
         this.username = param.getUsername();
     }
+    public void encodePassword(String password){
+        this.password = password;
+    }
 }

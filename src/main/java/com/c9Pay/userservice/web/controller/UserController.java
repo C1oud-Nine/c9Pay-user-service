@@ -3,9 +3,9 @@ package com.c9Pay.userservice.web.controller;
 import com.c9Pay.userservice.client.AuthClient;
 import com.c9Pay.userservice.client.CreditClient;
 import com.c9Pay.userservice.entity.User;
+import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.web.dto.auth.SerialNumberResponse;
 import com.c9Pay.userservice.web.exception.IllegalTokenDetailException;
-import com.c9Pay.userservice.jwt.TokenProvider;
 import com.c9Pay.userservice.web.dto.user.UserDto;
 import com.c9Pay.userservice.web.dto.user.UserUpdateParam;
 import com.c9Pay.userservice.web.exception.handler.TokenGenerationFailureException;
@@ -27,14 +27,13 @@ public class UserController {
     private final CreditClient creditClient;
     private final AuthClient authClient;
     private final UserService userService;
-    private final TokenProvider tokenProvider;
-
+    private final JwtTokenUtil jwtTokenUtil;
 
     @GetMapping
     public ResponseEntity<UserDto> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
 
-        Authentication authentication = parseToken(token);
-        Long targetId = Long.valueOf(authentication.getName());
+        String ID = parseToken(token);
+        Long targetId = Long.valueOf(ID);
         User findUser = userService.findById(targetId);
         UserDto dto = UserDto.builder()
                 .userId(findUser.getUserId())
@@ -48,12 +47,13 @@ public class UserController {
 
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token){
-        Authentication authentication = parseToken(token);
-        Long targetId = Long.valueOf(authentication.getName());
+        String ID = parseToken(token);
+        Long targetId = Long.valueOf(ID);
         String serialNumber = userService
-                .findById(Long.valueOf(authentication.getName()))
+                .findById(targetId)
                 .getSerialNumber().toString();
 
+        //@TODO 로그아웃
         userService.deleteUserById(targetId);
         creditClient.deleteAccount(serialNumber);
         return ResponseEntity.ok("삭제 요청 성공.");
@@ -61,17 +61,18 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<?> updateUserInfo(@CookieValue(AUTHORIZATION_HEADER) String token, @RequestBody UserUpdateParam param){
-        Authentication authentication = parseToken(token);
-        Long targetId = Long.valueOf(authentication.getName());
+        String ID = parseToken(token);
+        log.info("ID: {}", ID);
+        Long targetId = Long.valueOf(ID);
         userService.updateUserById(targetId, param);
         return ResponseEntity.ok(param);
     }
 
     @GetMapping("/serial-number")
     public ResponseEntity<?> getSerialNumber(@CookieValue(AUTHORIZATION_HEADER) String token){
-        Authentication authentication = parseToken(token);
-        User findUser = userService.findById(Long.valueOf(authentication.getName()));
-        return ResponseEntity.ok(findUser.getSerialNumber());
+        String ID = parseToken(token);
+        User findUser = userService.findById(Long.valueOf(ID));
+        return ResponseEntity.ok(findUser.getSerialNumber().toString());
     }
 
     @GetMapping("/check-duplicate")
@@ -94,10 +95,10 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    private Authentication parseToken(String token) {
+    private String parseToken(String token) {
         if(token.length() >= 7){
             String parsedToken = token.substring(7);
-            return tokenProvider.getAuthentication(parsedToken);
+            return jwtTokenUtil.extractId(parsedToken);
         }
         throw new IllegalTokenDetailException();
     }

@@ -2,12 +2,12 @@
 ### 사용자 정보 업데이트
 PUT {{user-api}}/api/user
 Content-Type: application/json
-cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2OTA5MzExODh9.3EgEClidLpwZ4oyY_mETnCvrawlhESgKXeXiS3SbpU-dUAGdF8ObmQYkdUZadgf_jihD7l5QaKoUh1yqDzH9Ig
+cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjkxMDU3ODE4LCJleHAiOjE2OTEwNTg1Njh9.DTj8tyZDMtqawEE39yXjR9e_h91snKN2ZI3p7mCQI2MlPPzYZ0HtfpX1NMQTkz3C8eMmUNudgam8ZDUnnIaxdQ
 
 {
   "username": "vv",
   "email":"aaa@bbb.ccc",
-  "userId": "vvv",
+  "userId": "vvv3",
   "password": "v2v"
 }
 
@@ -16,16 +16,16 @@ POST {{user-api}}/api/user/signup
 Content-Type: application/json
 
 {
-  "userId":"vv1",
+  "userId":"vv2",
   "username": "dummy",
-  "password": "vv",
+  "password": "vv3",
   "email": "abd@gmail.com"
 }
 
 
 ### 사용자 정보
 GET {{user-api}}/api/user
-cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2ODkzMTE5MTR9.IESAgQN1l2rXFqk7WxpEfldNCUB9cvpcE9aEu0srEcoUq7eoWh4Y4NO21blTFXYzAQU7RlZ8IHTf8DsaPLdmkA
+cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjkxMDU3ODE4LCJleHAiOjE2OTEwNTg1Njh9.DTj8tyZDMtqawEE39yXjR9e_h91snKN2ZI3p7mCQI2MlPPzYZ0HtfpX1NMQTkz3C8eMmUNudgam8ZDUnnIaxdQ
 
 ### 아이디 중복 확인
 GET {{user-api}}/user/check-duplicate
@@ -34,8 +34,8 @@ userId: test2
 
 ### 사용자 개체 식별번호 조회
 GET {{user-api}}/user/serial-number
-cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2ODkzMTE5MTR9.IESAgQN1l2rXFqk7WxpEfldNCUB9cvpcE9aEu0srEcoUq7eoWh4Y4NO21blTFXYzAQU7RlZ8IHTf8DsaPLdmkA
+cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjkxMDU3ODE4LCJleHAiOjE2OTEwNTg1Njh9.DTj8tyZDMtqawEE39yXjR9e_h91snKN2ZI3p7mCQI2MlPPzYZ0HtfpX1NMQTkz3C8eMmUNudgam8ZDUnnIaxdQ
 
 ### 사용자 삭제
 DELETE {{user-api}}/api/user
-cookie:  Authorization=Bearer+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2IiwidHlwZSI6IiV7and0LnNlcnZpY2UtdHlwZX0iLCJleHAiOjE2OTA5MzE5MjJ9.5gCpJGg0YXZUXZfuI2fCBdGLcWcyA50d-bb01Nzd-kU-V8ZkHdMZC4GjwcZSpRIvApmA-1AZlP3A0b1qnlkn-g
+cookie:  Authorization=Bearer+eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjkxMDU3MzYzLCJleHAiOjE2OTEwNTgxMTN9.zLQpk34_Gy_yjgbgx3mVN8PNrQAODl4tNqtfDIZJ5vPQp9Cgt_SAj99xRcDohFuoY4YW8zAjrJHo4Ao8MpVzuw

@@ -3,7 +3,7 @@ package com.c9Pay.userservice.web.controller;
 import com.c9Pay.userservice.certificate.Certificate;
 import com.c9Pay.userservice.certificate.CertificateProvider;
 import com.c9Pay.userservice.entity.User;
-import com.c9Pay.userservice.jwt.TokenProvider;
+import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.web.dto.certificate.CertificateResponse;
 import com.c9Pay.userservice.web.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +25,14 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 public class QrController {
 
     private final CertificateProvider certificateProvider;
-    private final TokenProvider tokenProvider;
+
+    private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
     @GetMapping("/api/qr")
     public ResponseEntity<CertificateResponse> createQr(@CookieValue(AUTHORIZATION_HEADER) String token){
 
-        Authentication authentication = tokenProvider.getAuthentication(token.substring(7));
-        User findId = userService.findById(Long.valueOf(authentication.getName()));
+        String ID = jwtTokenUtil.extractId(token.substring(7));
+        User findId = userService.findById(Long.valueOf(ID));
         UUID serialNumber = findId.getSerialNumber();
         certificateProvider.getCertificate(serialNumber);
 

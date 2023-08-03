@@ -1,39 +1,56 @@
 package com.c9Pay.userservice.web.service;
 
 import com.c9Pay.userservice.entity.User;
+import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.web.exception.DuplicatedUserException;
 import com.c9Pay.userservice.web.exception.LoginFailedException;
 import com.c9Pay.userservice.web.exception.UserNotFoundException;
 import com.c9Pay.userservice.web.dto.user.UserUpdateParam;
 import com.c9Pay.userservice.web.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final AuthenticationManager authenticationManager;
 
-    //@TODO:EXCEPTION 처러해둔 것 수정
     @Transactional
     public void signUp(User user){
-        //@TODO: feign Client(auth-service: 개체 식별번호 생성 요청, credit-service: 계좌 생성 요청)
         if(!validateDuplicateUserId(user.getUserId()))
             throw new DuplicatedUserException(String.format("ID[%s] is Duplicated", user.getUserId()));
+        String encodedPassword= passwordEncoder.encode(user.getPassword());
+        user.encodePassword(encodedPassword);
         userRepository.save(user);
     }
 
-    public Long authenticate(String userId, String password){
+    public String authenticate(String userId, String password){
         User findUser = userRepository.findByUserId(userId).orElse(null);
-        //추후 BCrypt 추가시 수정 필요
-        if(findUser == null || !findUser.getPassword().equals(password))
-            throw new LoginFailedException();
+        log.info("find user id : {}", Objects.requireNonNull(findUser).getId());
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        findUser.getId().toString(),
+                        password
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return findUser.getId();
+        return jwtTokenUtil.generateToken(findUser.getId().toString());
     }
 
     public User findUserByUserId(String userId){
@@ -54,6 +71,8 @@ public class UserService {
     @Transactional
     public void updateUserById(Long id, UserUpdateParam param){
         User findUser = findById(id);
+        String encode = passwordEncoder.encode(findUser.getPassword());
+        param.setPassword(encode);
         findUser.updateUser(param);
     }
     public User findById(Long id){

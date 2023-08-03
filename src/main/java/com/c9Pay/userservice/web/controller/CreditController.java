@@ -3,7 +3,7 @@ package com.c9Pay.userservice.web.controller;
 import com.c9Pay.userservice.client.CreditClient;
 import com.c9Pay.userservice.constant.CookieConstant;
 import com.c9Pay.userservice.entity.User;
-import com.c9Pay.userservice.jwt.TokenProvider;
+import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.web.dto.credit.ChargeForm;
 import com.c9Pay.userservice.web.exception.IllegalTokenDetailException;
 import com.c9Pay.userservice.web.service.UserService;
@@ -24,17 +24,18 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 @RequiredArgsConstructor
 public class CreditController {
     private final CreditClient creditClient;
-    private final TokenProvider tokenProvider;
+
+    private final JwtTokenUtil jwtTokenUtil;
 
     private final UserService userService;
 
     @PostMapping
     public ResponseEntity<?> chargeCredit(@RequestBody ChargeForm charge, @CookieValue(AUTHORIZATION_HEADER) String token){
         log.info("Before call credit service");
-        Authentication authentication = parseToken(token);
-        log.info("id {}", authentication.getName());
+        String ID = parseToken(token);
+        log.info("id {}", ID);
         String serialNumber = userService
-                .findById(Long.valueOf(authentication.getName()))
+                .findById(Long.valueOf(ID))
                 .getSerialNumber().toString();
 
         log.info("serial number: {}", serialNumber);
@@ -46,10 +47,10 @@ public class CreditController {
         return ResponseEntity.ok().build();
     }
 
-    private Authentication parseToken(String token) {
+    private String parseToken(String token) {
         if(token.length() >= 7){
             String parsedToken = token.substring(7);
-            return tokenProvider.getAuthentication(parsedToken);
+            return jwtTokenUtil.extractId(parsedToken);
         }
         throw new IllegalTokenDetailException();
     }
