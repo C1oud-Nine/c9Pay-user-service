@@ -1,0 +1,41 @@
+package com.c9Pay.userservice.web.mvc.controller;
+
+
+import com.c9Pay.userservice.constant.CookieConstant;
+import com.c9Pay.userservice.data.dto.user.LoginForm;
+import com.c9Pay.userservice.web.mvc.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+
+import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
+
+@Slf4j
+@RestController
+@RequestMapping
+@RequiredArgsConstructor
+public class LoginController {
+    private final UserService userService;
+
+    @PostMapping("/api/login")
+    public ResponseEntity<String> login(@RequestBody LoginForm form,  HttpServletRequest request, HttpServletResponse response){
+        String token = userService.authenticate(form.getUserId(), form.getPassword());
+        refreshCookie(response, token);
+        return ResponseEntity.ok("로그인 성공");
+    }
+
+    private static void refreshCookie( HttpServletResponse response, String token) {
+        Cookie expiredCookie = new Cookie(AUTHORIZATION_HEADER, null);
+        expiredCookie.setMaxAge(0);
+        response.addCookie(expiredCookie);
+        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, "Bearer+" + token);
+        cookie.setMaxAge(1800);
+        response.addCookie(cookie);
+    }
+}

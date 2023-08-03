@@ -1,7 +1,7 @@
 package com.c9Pay.userservice.service;
 
-import com.c9Pay.userservice.entity.User;
-import com.c9Pay.userservice.web.service.UserService;
+import com.c9Pay.userservice.data.entity.User;
+import com.c9Pay.userservice.web.mvc.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

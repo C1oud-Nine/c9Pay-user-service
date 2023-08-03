@@ -29,12 +29,12 @@ public class JwtTokenUtil {
     private long EXPIRATION_TIME;
 
     public String getToken(HttpServletRequest request){
-        String bearerToken = "";
+        String bearerToken = null;
         Cookie[] cookies = request.getCookies();
+        if(cookies == null) return null;
         for (Cookie cookie : cookies) {
-            if(cookie.getName().equals(AUTHORIZATION_HEADER)) {
+            if(cookie.getName().equals(AUTHORIZATION_HEADER))
                 bearerToken = cookie.getValue();
-            }
         }
 
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer+"))
