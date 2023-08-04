@@ -1,6 +1,5 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
-import com.c9Pay.userservice.constant.BearerConstant;
 import com.c9Pay.userservice.data.dto.user.UserResponse;
 import com.c9Pay.userservice.web.client.AuthClient;
 import com.c9Pay.userservice.web.client.CreditClient;
@@ -18,9 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import static com.c9Pay.userservice.constant.BearerConstant.BEARER_PREFIX;
@@ -89,7 +85,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDto form){
         log.info("Starting registration for a new user account");
-        SerialNumberResponse serialNumberResponse = authClient.createSerialNumber().getBody();
+        SerialNumberResponse serialNumberResponse = authClient.getSerialNumber().getBody();
         if(serialNumberResponse == null) throw new TokenGenerationFailureException();
         String serialNumber = serialNumberResponse.getSerialNumber().toString();
         log.info("Entity identification number generation:{}", serialNumber);
