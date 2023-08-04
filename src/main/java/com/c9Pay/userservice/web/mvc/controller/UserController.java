@@ -1,5 +1,6 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
+import com.c9Pay.userservice.constant.BearerConstant;
 import com.c9Pay.userservice.data.dto.user.UserResponse;
 import com.c9Pay.userservice.web.client.AuthClient;
 import com.c9Pay.userservice.web.client.CreditClient;
@@ -22,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import static com.c9Pay.userservice.constant.BearerConstant.BEARER_PREFIX;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
 
 @Slf4j
@@ -41,7 +43,6 @@ public class UserController {
         User findUser = userService.findById(targetId);
         UserResponse response = UserResponse.mapping(findUser);
         return ResponseEntity.ok(response);
-
     }
 
     @DeleteMapping
@@ -59,11 +60,16 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateUserInfo(@CookieValue(AUTHORIZATION_HEADER) String token, @RequestBody UserUpdateParam param){
+    public ResponseEntity<?> updateUserInfo(@CookieValue(AUTHORIZATION_HEADER) String token,
+                                            @RequestBody UserUpdateParam param,
+                                            HttpServletResponse response){
         String ID = parseToken(token);
         log.info("ID: {}", ID);
         Long targetId = Long.valueOf(ID);
+        String password = param.getPassword();
         userService.updateUserById(targetId, param);
+        String newToken = userService.authenticate(param.getUserId(), password);
+        response.addCookie(new Cookie(AUTHORIZATION_HEADER, BEARER_PREFIX+ newToken));
         return ResponseEntity.ok(param);
     }
 

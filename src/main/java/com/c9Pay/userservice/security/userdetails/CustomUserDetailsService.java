@@ -1,8 +1,7 @@
-package com.c9Pay.userservice.security.customuserdetails;
+package com.c9Pay.userservice.security.userdetails;
 
 
 import com.c9Pay.userservice.data.entity.User;
-import com.c9Pay.userservice.security.customuserdetails.CustomUserDetails;
 import com.c9Pay.userservice.web.mvc.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

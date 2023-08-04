@@ -1,4 +1,4 @@
-package com.c9Pay.userservice.security.customuserdetails;
+package com.c9Pay.userservice.security.userdetails;
 
 
 import org.springframework.security.core.GrantedAuthority;
