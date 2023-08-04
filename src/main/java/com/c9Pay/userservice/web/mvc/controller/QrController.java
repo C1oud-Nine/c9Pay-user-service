@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
@@ -28,7 +29,7 @@ public class QrController {
     private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
     @GetMapping("/api/qr")
-    public ResponseEntity<CertificateResponse> createQr(@CookieValue(AUTHORIZATION_HEADER) String token){
+    public ResponseEntity<CertificateResponse> createQr(@RequestHeader(AUTHORIZATION_HEADER) String token){
 
         String ID = jwtTokenUtil.extractId(token.substring(7));
         User findId = userService.findById(Long.valueOf(ID));

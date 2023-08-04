@@ -1,5 +1,6 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
+import com.c9Pay.userservice.data.dto.user.UserResponse;
 import com.c9Pay.userservice.web.client.AuthClient;
 import com.c9Pay.userservice.web.client.CreditClient;
 import com.c9Pay.userservice.data.entity.User;
@@ -10,7 +11,9 @@ import com.c9Pay.userservice.data.dto.user.UserDto;
 import com.c9Pay.userservice.data.dto.user.UserUpdateParam;
 import com.c9Pay.userservice.web.exception.handler.TokenGenerationFailureException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,30 +32,24 @@ public class UserController {
     private final JwtTokenUtil jwtTokenUtil;
 
     @GetMapping
-    public ResponseEntity<UserDto> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
-
+    public ResponseEntity<?> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
         String ID = parseToken(token);
         Long targetId = Long.valueOf(ID);
         User findUser = userService.findById(targetId);
-        UserDto dto = UserDto.builder()
-                .userId(findUser.getUserId())
-                .email(findUser.getEmail())
-                .username(findUser.getUsername())
-                .password(findUser.getPassword())
-                .build();
-        return ResponseEntity.ok(dto);
+        UserResponse response = UserResponse.mapping(findUser);
+        return ResponseEntity.ok(response);
 
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token){
+    public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token, HttpServletResponse response){
         String ID = parseToken(token);
         Long targetId = Long.valueOf(ID);
         String serialNumber = userService
                 .findById(targetId)
                 .getSerialNumber().toString();
 
-        //@TODO 로그아웃
+        response.addCookie(new Cookie(AUTHORIZATION_HEADER, null));
         userService.deleteUserById(targetId);
         creditClient.deleteAccount(serialNumber);
         return ResponseEntity.ok("삭제 요청 성공.");

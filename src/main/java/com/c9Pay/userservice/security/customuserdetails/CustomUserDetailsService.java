@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -20,9 +21,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        User user = userRepository.findById(Long.valueOf(userId)).orElseThrow();
-        List<GrantedAuthority> authorityList = List.of(new SimpleGrantedAuthority("USER"));
-        return new CustomUserDetails(user.getId().toString(), user.getPassword(), authorityList);
+        Optional<User> findUser = userRepository.findById(Long.valueOf(userId));
+        if(findUser.isPresent()){
+            User user = findUser.get();
+            List<GrantedAuthority> authorityList = List.of(new SimpleGrantedAuthority("USER"));
+            return new CustomUserDetails(user.getId().toString(), user.getPassword(), authorityList);
+        }
+        return null;
     }
 
 }

@@ -24,7 +24,7 @@ public class CreditController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> chargeCredit(@RequestBody ChargeForm charge, @CookieValue(AUTHORIZATION_HEADER) String token){
+    public ResponseEntity<?> chargeCredit(@RequestBody ChargeForm charge, @RequestHeader(AUTHORIZATION_HEADER) String token){
         log.info("Before call credit service");
         String ID = parseToken(token);
         log.info("id {}", ID);

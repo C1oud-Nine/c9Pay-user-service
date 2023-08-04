@@ -1,6 +1,8 @@
 package com.c9Pay.userservice.security.jwt;
 
 import com.c9Pay.userservice.constant.CookieConstant;
+import com.c9Pay.userservice.web.exception.TokenNotFoundException;
+import com.c9Pay.userservice.web.exception.UserNotFoundException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.Cookie;
@@ -13,8 +15,12 @@ import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
 
@@ -29,16 +35,20 @@ public class JwtTokenUtil {
     private long EXPIRATION_TIME;
 
     public String getToken(HttpServletRequest request){
-        String bearerToken = null;
-        Cookie[] cookies = request.getCookies();
-        if(cookies == null) return null;
-        for (Cookie cookie : cookies) {
-            if(cookie.getName().equals(AUTHORIZATION_HEADER))
-                bearerToken = cookie.getValue();
-        }
+        try{
+            Optional<Cookie> cookies = Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().equals(AUTHORIZATION_HEADER))
+                    .filter(cookie-> cookie.getValue().startsWith("Bearer+"))
+                    .findFirst();
 
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer+"))
-            return bearerToken.substring(7);
+            if(cookies.isPresent()) {
+                String bearerToken = cookies.get().getValue();
+                if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer+"))
+                    return bearerToken.substring(7);
+            }
+        }catch (Exception ignored){
+            return null;
+        }
         return null;
     }
 

@@ -26,16 +26,9 @@ public class LoginController {
     @PostMapping("/api/login")
     public ResponseEntity<String> login(@RequestBody LoginForm form,  HttpServletRequest request, HttpServletResponse response){
         String token = userService.authenticate(form.getUserId(), form.getPassword());
-        refreshCookie(response, token);
+        response.addCookie(new Cookie(AUTHORIZATION_HEADER, "Bearer+"+ token));
         return ResponseEntity.ok("로그인 성공");
     }
 
-    private static void refreshCookie( HttpServletResponse response, String token) {
-        Cookie expiredCookie = new Cookie(AUTHORIZATION_HEADER, null);
-        expiredCookie.setMaxAge(0);
-        response.addCookie(expiredCookie);
-        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, "Bearer+" + token);
-        cookie.setMaxAge(1800);
-        response.addCookie(cookie);
-    }
+
 }

@@ -2,7 +2,7 @@
 ### 사용자 정보 업데이트
 PUT {{user-api}}/api/user
 Content-Type: application/json
-cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjkxMTA1MzM4LCJleHAiOjE2OTExMDYwODh9.s_HO3MlDV1ERuSYzPHhxYUo5ysH0_FUeo0PqQpp5cJrmte0-BAvsG03Bnmv_Em37Cp887rcT6QblRbYfRfiSvw
+Cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjkxMTExOTA2LCJleHAiOjE2OTExMTI2NTZ9.tof3Nl5sqP3-GlQ5jVSOTaioUAT1w-GGzo_k3no8WwOjKW4g7ddjThXIE_T_iHOLmIjGbUzAV4t2wAkFouXmNg
 
 {
   "username": "vv",
@@ -16,16 +16,16 @@ POST {{user-api}}/api/user/signup
 Content-Type: application/json
 
 {
-  "userId":"vv2",
+  "userId":"vv",
   "username": "dummy",
-  "password": "vv3",
+  "password": "vv",
   "email": "abd@gmail.com"
 }
 
 
 ### 사용자 정보
 GET {{user-api}}/api/user
-cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjkxMDU3ODE4LCJleHAiOjE2OTEwNTg1Njh9.DTj8tyZDMtqawEE39yXjR9e_h91snKN2ZI3p7mCQI2MlPPzYZ0HtfpX1NMQTkz3C8eMmUNudgam8ZDUnnIaxdQ
+Cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjkxMTEyNDkyLCJleHAiOjE2OTExMTMyNDJ9.5l1BcraJYchi9i2dVAz2n2dBbG6XdMuczMUisvSnDbOilixyZrPuqzGmMucfUvH1j0XFULwQAYZv8RVkBqQXVA
 
 ### 아이디 중복 확인
 GET {{user-api}}/api/user/check-duplicate
