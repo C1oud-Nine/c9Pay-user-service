@@ -69,7 +69,7 @@ public class UserService {
     @Transactional
     public void updateUserById(Long id, UserUpdateParam param){
         User findUser = findById(id);
-        String encode = passwordEncoder.encode(findUser.getPassword());
+        String encode = passwordEncoder.encode(param.getPassword());
         param.setPassword(encode);
         findUser.updateUser(param);
     }

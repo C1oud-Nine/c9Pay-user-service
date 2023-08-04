@@ -1,12 +1,20 @@
 package com.c9Pay.userservice.security;
 
+import com.c9Pay.userservice.security.customuserdetails.CustomUserDetails;
+import com.c9Pay.userservice.security.customuserdetails.CustomUserDetailsService;
 import com.c9Pay.userservice.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.metrics.cache.CaffeineCacheMeterBinderProvider;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -26,7 +34,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter authenticationFilter;
-
+    private final AuthenticationProvider authenticationProvider;
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
@@ -38,10 +46,10 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/user/signup")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/login")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/user/check-duplicate")).permitAll()
-
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/**")).hasAuthority("USER")
                         .anyRequest().authenticated())
+                .authenticationProvider(authenticationProvider)
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers((header) -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))
@@ -57,8 +65,4 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 }
