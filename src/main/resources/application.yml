@@ -1,10 +1,6 @@
 spring:
   application:
     name: user-service
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:data.sql
   h2:
     console:
       enabled: true
@@ -25,7 +21,7 @@ server:
 
 
 jwt:
-  time: ENC(fUvyjIJO2khbDxBL+a+pfg==)
+  time: ENC(7R/Ski8G2Mi4k+uprAwLuQ==)
   service-type: ENC(9vruXpL+mRox/n5yyNkQmg==)
   secret: ENC(50PmC8wTPcUAcv8fh1XLM+eMhqMQsOuNhOJG3X8wgJ4HP62Q8h8+FlIlvUV81cifTkH+ym7RkB3lzOJJ4MX5WJ0QjvN1y2B/AKyQGNZvFD9/zp2G29osZKQX/ZtkR4OzjSMTpOaofZEJnG1L3+Ha5Q==)
 
