@@ -70,6 +70,8 @@ public class UserService {
     public void updateUserById(Long id, UserUpdateParam param){
         User findUser = findById(id);
         String encode = passwordEncoder.encode(param.getPassword());
+        if (!validateDuplicateUserId(param.getUserId()))
+            throw new DuplicatedUserException(String.format("[ID:%s] is already exist", param.getUserId()));
         param.setPassword(encode);
         findUser.updateUser(param);
     }

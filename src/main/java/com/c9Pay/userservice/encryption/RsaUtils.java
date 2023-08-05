@@ -34,7 +34,7 @@ public class RsaUtils {
     private CertificateResponse certificate;
 
     private KeyPair keyPair;
-    @PostConstruct
+    /*@PostConstruct
     public void createKeyPair(){
         try{
             keyPair = generateKey(publicKey, privateKey);
@@ -48,7 +48,7 @@ public class RsaUtils {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
     public String encryption(String serialNumber){
         try {
             return Arrays.toString(getEncryptedData(serialNumber, keyPair.getPrivate()));
