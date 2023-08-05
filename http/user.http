@@ -16,7 +16,7 @@ POST {{user-api}}/api/user/signup
 Content-Type: application/json
 
 {
-  "userId":"vv",
+  "userId":"vv22",
   "username": "dummy",
   "password": "vv",
   "email": "abd@gmail.com"

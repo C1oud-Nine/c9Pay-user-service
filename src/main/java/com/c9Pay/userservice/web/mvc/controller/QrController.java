@@ -1,7 +1,6 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
-import com.c9Pay.userservice.certificate.Certificate;
-import com.c9Pay.userservice.certificate.CertificateProvider;
+
 import com.c9Pay.userservice.data.entity.User;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.data.dto.certificate.CertificateResponse;
@@ -24,23 +23,16 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 @RequiredArgsConstructor
 public class QrController {
 
-    private final CertificateProvider certificateProvider;
 
     private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
-    @GetMapping("/api/qr")
+    /*@GetMapping("/api/qr")
     public ResponseEntity<CertificateResponse> createQr(@RequestHeader(AUTHORIZATION_HEADER) String token){
 
-        String ID = jwtTokenUtil.extractId(token.substring(7));
-        User findId = userService.findById(Long.valueOf(ID));
-        UUID serialNumber = findId.getSerialNumber();
-        certificateProvider.getCertificate(serialNumber);
-
-        Optional<Certificate> nullable = certificateProvider.getCertificate(serialNumber);
 
         return nullable
                 .map(certificate -> ResponseEntity.ok(new CertificateResponse(certificate.getCertificate(), certificate.getSign())))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
 
-    }
+    }*/
 }
