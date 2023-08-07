@@ -1,12 +1,14 @@
 package com.c9Pay.userservice.data.dto.user;
 
 import com.c9Pay.userservice.data.entity.User;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
 @Builder
 public class UserDto {
     private String username;
