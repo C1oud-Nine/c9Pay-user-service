@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -75,9 +76,18 @@ public class UserService {
         param.setPassword(encode);
         findUser.updateUser(param);
     }
+
+    public User findBySerialNumber(String serialNumber){
+        return userRepository.findBySerialNumber(UUID.fromString(serialNumber))
+                .orElseThrow(()-> new UserNotFoundException
+                        (String.format("SERIAL-NUMBER[%s] doesn't exit.", serialNumber)));
+    }
     public User findById(Long id){
         return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(String.format("ID[%s] not found", id)));
     }
 
 
+    public void deleteOneByName(String name){
+        userRepository.deleteByUsername(name);
+    }
 }
