@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AccountDetails {
 
-    String id;
+    String serialNumber;
     Long credit;
 }
