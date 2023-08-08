@@ -34,22 +34,16 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDto form){
-        try{
-            log.info("Starting registration for a new user account");
-            SerialNumberResponse serialNumberResponse = authClient.getSerialNumber().getBody();
-            if(serialNumberResponse == null) throw new TokenGenerationFailureException();
-            String serialNumber = serialNumberResponse.getSerialNumber().toString();
-            log.info("Entity identification number generation:{}", serialNumber);
-            creditClient.createAccount(serialNumber);
-            User joinUser = form.toEntity(serialNumberResponse.getSerialNumber());
-            userService.signUp(joinUser);
-            log.info("Registration success");
-            return ResponseEntity.ok(joinUser.getSerialNumber());
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        return ResponseEntity.badRequest().build();
+        log.info("Starting registration for a new user account");
+        SerialNumberResponse serialNumberResponse = authClient.getSerialNumber().getBody();
+        if(serialNumberResponse == null) throw new TokenGenerationFailureException();
+        String serialNumber = serialNumberResponse.getSerialNumber().toString();
+        log.info("Entity identification number generation:{}", serialNumber);
+        creditClient.createAccount(serialNumber);
+        User joinUser = form.toEntity(serialNumberResponse.getSerialNumber());
+        userService.signUp(joinUser);
+        log.info("Registration success");
+        return ResponseEntity.ok(serialNumber);
     }
 
     @GetMapping

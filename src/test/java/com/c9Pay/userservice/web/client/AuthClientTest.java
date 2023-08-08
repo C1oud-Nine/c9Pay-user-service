@@ -54,7 +54,7 @@ class AuthClientTest {
     }
 
     @Test
-    @DisplayName("I get a certificate from the certification service.")
+    @DisplayName("Get a certificate from the certification service.")
     public void testGetCertification(){
         ServiceInfo serviceInfo = new ServiceInfo("test", "test/endpoint");
         CertificateForm certificateForm = new CertificateForm(publicKey,serviceInfo);

@@ -54,7 +54,7 @@ class CreditClientTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         ResponseEntity<AccountDetails> account = creditClient.getAccount(serialNumber);
         assertThat(Objects.requireNonNull(account.getBody()).getCredit()).isEqualTo(5000L);
-        assertThat(account.getBody().getId()).isEqualTo(serialNumber);
+        assertThat(account.getBody().getSerialNumber()).isEqualTo(serialNumber);
         deleteAccount(serialNumber);
     }
 
@@ -74,8 +74,8 @@ class CreditClientTest {
     }
 
 
-    private void deleteAccount(String id){
-        ResponseEntity<?> deleteResponse = creditClient.deleteAccount(id);
+    private void deleteAccount(String serialNumber){
+        ResponseEntity<?> deleteResponse = creditClient.deleteAccount(serialNumber);
         assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
