@@ -32,6 +32,20 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
 
+    @PostMapping("/signup")
+    public ResponseEntity<?> signUp(@RequestBody UserDto form){
+        log.info("Starting registration for a new user account");
+        SerialNumberResponse serialNumberResponse = authClient.getSerialNumber().getBody();
+        if(serialNumberResponse == null) throw new TokenGenerationFailureException();
+        String serialNumber = serialNumberResponse.getSerialNumber().toString();
+        log.info("Entity identification number generation:{}", serialNumber);
+        creditClient.createAccount(serialNumber);
+        User joinUser = form.toEntity(serialNumberResponse.getSerialNumber());
+        userService.signUp(joinUser);
+        log.info("Registration success");
+        return ResponseEntity.ok(serialNumber);
+    }
+
     @GetMapping
     public ResponseEntity<?> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
         String ID = parseToken(token);
@@ -75,25 +89,11 @@ public class UserController {
         User findUser = userService.findById(Long.valueOf(ID));
         return ResponseEntity.ok(findUser.getSerialNumber().toString());
     }
-
     @GetMapping("/check-duplicate")
     public ResponseEntity<?> checkDuplicated(HttpServletRequest request){
 
         return userService.validateDuplicateUserId(request.getHeader("userId"))?
         ResponseEntity.ok().build(): ResponseEntity.badRequest().build();
-    }
-    @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody UserDto form){
-        log.info("Starting registration for a new user account");
-        SerialNumberResponse serialNumberResponse = authClient.getSerialNumber().getBody();
-        if(serialNumberResponse == null) throw new TokenGenerationFailureException();
-        String serialNumber = serialNumberResponse.getSerialNumber().toString();
-        log.info("Entity identification number generation:{}", serialNumber);
-        creditClient.createAccount(serialNumber);
-        User joinUser = form.toEntity(serialNumberResponse.getSerialNumber());
-        userService.signUp(joinUser);
-        log.info("Registration success");
-        return ResponseEntity.ok().build();
     }
 
     private String parseToken(String token) {

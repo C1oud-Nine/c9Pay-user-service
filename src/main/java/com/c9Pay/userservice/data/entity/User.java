@@ -16,6 +16,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends BaseTimeEntity {
+    @Override
+    public boolean equals(UserUpdateParam user) {
+        return (this.email.equals(user.getEmail())
+                && this.username.equals(user.getUsername())
+                && this.userId.equals(user.getUserId()));
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

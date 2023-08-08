@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -38,7 +39,7 @@ public class UserService {
     }
 
     public String authenticate(String userId, String password){
-        User findUser = userRepository.findByUserId(userId).orElse(null);
+        User findUser = userRepository.findByUserId(userId).orElseThrow(() -> new UserNotFoundException(String.format("User ID[%s] not found",userId )));
         log.info("find user id : {}", Objects.requireNonNull(findUser).getId());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -75,9 +76,18 @@ public class UserService {
         param.setPassword(encode);
         findUser.updateUser(param);
     }
+
+    public User findBySerialNumber(String serialNumber){
+        return userRepository.findBySerialNumber(UUID.fromString(serialNumber))
+                .orElseThrow(()-> new UserNotFoundException
+                        (String.format("SERIAL-NUMBER[%s] doesn't exit.", serialNumber)));
+    }
     public User findById(Long id){
         return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(String.format("ID[%s] not found", id)));
     }
 
 
+    public void deleteOneByName(String name){
+        userRepository.deleteByUsername(name);
+    }
 }

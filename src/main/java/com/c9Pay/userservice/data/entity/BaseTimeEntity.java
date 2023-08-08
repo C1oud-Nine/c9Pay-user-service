@@ -1,5 +1,6 @@
 package com.c9Pay.userservice.data.entity;
 
+import com.c9Pay.userservice.data.dto.user.UserUpdateParam;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -12,10 +13,12 @@ import java.time.LocalDateTime;
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class BaseTimeEntity {
+public abstract class BaseTimeEntity {
     @CreatedDate
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     private LocalDateTime modifiedDate;
+
+    public abstract boolean equals(UserUpdateParam user);
 }
