@@ -4,6 +4,6 @@ POST {{user-api}}/api/login
 Content-Type: application/json
 
 {
-  "userId": "vv",
+  "userId": "vv22",
   "password": "vv"
 }

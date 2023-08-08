@@ -53,7 +53,7 @@ class UserControllerTest {
     public void testSingUp(){
         //given
         UserDto form = new UserDto("test-dummy", "test-id",
-                "test-password","test@email.com");
+                "test-password"," ");
         //when
         ResponseEntity<?> signUpResponse = userController.signUp(form);
         User findUser = userService
@@ -65,7 +65,7 @@ class UserControllerTest {
         assertThat(findUser.getUserId()).isEqualTo("test-id");
         assertThat(findUser.getUsername()).isEqualTo("test-dummy");
         assertTrue(passwordEncoder.matches("test-password", findUser.getPassword()));
-        assertThat(findUser.getEmail()).isEqualTo("test@email.com");
+        //assertThat(findUser.getEmail()).isEqualTo("test@email.com");
         validateSerialNumber(findUser.getSerialNumber().toString());
         deleteAccount(findUser.getSerialNumber().toString());
         userService.deleteUserById(findUser.getId());

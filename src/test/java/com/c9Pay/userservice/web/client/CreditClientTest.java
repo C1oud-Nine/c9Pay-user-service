@@ -53,6 +53,7 @@ class CreditClientTest {
         ResponseEntity<?> response = creditClient.loadCredit(serialNumber, new ChargeForm(5000L));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         ResponseEntity<AccountDetails> account = creditClient.getAccount(serialNumber);
+        assertThat(account.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(Objects.requireNonNull(account.getBody()).getCredit()).isEqualTo(5000L);
         assertThat(account.getBody().getSerialNumber()).isEqualTo(serialNumber);
         deleteAccount(serialNumber);

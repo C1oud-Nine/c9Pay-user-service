@@ -9,11 +9,13 @@ import com.c9Pay.userservice.data.dto.auth.SerialNumberResponse;
 import com.c9Pay.userservice.web.exception.IllegalTokenDetailException;
 import com.c9Pay.userservice.data.dto.user.UserDto;
 import com.c9Pay.userservice.data.dto.user.UserUpdateParam;
-import com.c9Pay.userservice.web.exception.handler.TokenGenerationFailureException;
+import com.c9Pay.userservice.web.exception.TokenGenerationFailureException;
+import com.c9Pay.userservice.web.exception.UserNotFoundException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,7 @@ public class UserController {
     private final JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody UserDto form){
+    public ResponseEntity<?> signUp(@RequestBody @Valid UserDto form){
         log.info("Starting registration for a new user account");
         SerialNumberResponse serialNumberResponse = authClient.getSerialNumber().getBody();
         if(serialNumberResponse == null) throw new TokenGenerationFailureException();
@@ -71,7 +73,7 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<?> updateUserInfo(@CookieValue(AUTHORIZATION_HEADER) String token,
-                                            @RequestBody UserUpdateParam param,
+                                            @Valid@RequestBody UserUpdateParam param,
                                             HttpServletResponse response){
         String ID = parseToken(token);
         log.info("ID: {}", ID);

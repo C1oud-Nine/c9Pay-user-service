@@ -1,4 +1,4 @@
-package com.c9Pay.userservice.web.exception.handler;
+package com.c9Pay.userservice.web.exception;
 
 public class TokenGenerationFailureException extends RuntimeException {
     public TokenGenerationFailureException(){

@@ -1,6 +1,7 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
 import com.c9Pay.userservice.data.dto.certificate.AuthForm;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @PostMapping("/internal/auth")
-    public ResponseEntity<?> authenticationResponse(@RequestBody AuthForm form){
+    public ResponseEntity<?> authenticationResponse(@Valid @RequestBody AuthForm form){
         return ResponseEntity.ok().build();
     }
 
