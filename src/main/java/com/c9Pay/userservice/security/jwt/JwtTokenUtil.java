@@ -38,7 +38,7 @@ public class JwtTokenUtil {
 
     @PostConstruct
     public void createSecureKey(){
-        key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
     public String getToken(HttpServletRequest request){
         try{
@@ -58,6 +58,10 @@ public class JwtTokenUtil {
         }
 
         return null;
+    }
+
+    public Key getKey() {
+        return key;
     }
 
     public String generateToken(String id){

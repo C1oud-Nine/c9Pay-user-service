@@ -5,6 +5,7 @@ import com.c9Pay.userservice.data.dto.user.LoginForm;
 import com.c9Pay.userservice.data.dto.user.UserDto;
 import com.c9Pay.userservice.data.entity.User;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
+import com.c9Pay.userservice.web.client.CreditClient;
 import com.c9Pay.userservice.web.exception.IllegalTokenDetailException;
 import com.c9Pay.userservice.web.exception.UserNotFoundException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
@@ -24,6 +25,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @SpringBootTest
@@ -34,12 +36,14 @@ class LoginControllerTest {
     @Autowired private UserController userController;
     @Autowired private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired private CreditClient creditClient;
+
     @Test
     @DisplayName("login / success")
     public void testLoginSuccess() throws Exception{
         //given
         UserDto dto = new UserDto("alphabet", "aa", "bb", "aa@bb.cc");
-        userController.signUp(dto);
+        ResponseEntity<?> responseEntity = userController.signUp(dto);
         LoginForm form = new LoginForm("aa", "bb");
         MockHttpServletResponse response = new MockHttpServletResponse();
         User findUser = userService.findUserByUserId("aa");
@@ -52,6 +56,7 @@ class LoginControllerTest {
         //then
         assertTrue(jwtTokenUtil.validateToken(token.substring(7)));
         assertThat(Long.parseLong(id)).isEqualTo(findUser.getId());
+        deleteAccount(responseEntity.getBody().toString());
      }
 
      @Test
@@ -59,7 +64,7 @@ class LoginControllerTest {
      public void testLoginFailById(){
          //given
          UserDto dto = new UserDto("alphabet", "dd1", "cc", "aa@bb.cc");
-         userController.signUp(dto);
+         ResponseEntity<?> responseEntity = userController.signUp(dto);
          LoginForm form = new LoginForm("aa", "cc");
          MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -67,6 +72,7 @@ class LoginControllerTest {
          assertThrows(BadCredentialsException.class,() ->loginController.login(form, response));
          Cookie cookie = response.getCookie(AUTHORIZATION_HEADER);
          if(cookie != null ) fail();
+         deleteAccount(responseEntity.getBody().toString());
      }
 
     @Test
@@ -74,7 +80,7 @@ class LoginControllerTest {
     public void testLoginFailByPassword(){
         //given
         UserDto dto = new UserDto("alphabet", "dd2", "cc", "aa@bb.cc");
-        userController.signUp(dto);
+        ResponseEntity<?> responseEntity = userController.signUp(dto);
         LoginForm form = new LoginForm("dd2", "bb");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -82,6 +88,7 @@ class LoginControllerTest {
         assertThrows(BadCredentialsException.class,() ->loginController.login(form, response));
         Cookie cookie = response.getCookie(AUTHORIZATION_HEADER);
         if(cookie != null ) fail();
+        deleteAccount(responseEntity.getBody().toString());
     }
 
     @Test
@@ -89,7 +96,7 @@ class LoginControllerTest {
     public void testLoginFail(){
         //given
         UserDto dto = new UserDto("alphabet", "dd3", "cc", "aa@bb.cc");
-        userController.signUp(dto);
+        ResponseEntity<?> responseEntity = userController.signUp(dto);
         LoginForm form = new LoginForm("aa", "ff");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -97,8 +104,15 @@ class LoginControllerTest {
         assertThrows(BadCredentialsException.class,() ->loginController.login(form, response));
         Cookie cookie = response.getCookie(AUTHORIZATION_HEADER);
         if(cookie != null ) fail();
+        deleteAccount(responseEntity.getBody().toString());
     }
 
+
+
+    private void deleteAccount(String serialNumber){
+        ResponseEntity<?> deleteResponse = creditClient.deleteAccount(serialNumber);
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(OK);
+    }
 
     private String parseToken(String token) {
         if(token.length() >= 7){
