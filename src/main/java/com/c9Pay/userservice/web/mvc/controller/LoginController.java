@@ -26,7 +26,7 @@ public class LoginController {
     private final UserService userService;
 
     @PostMapping("/api/login")
-    public ResponseEntity<String> login(@RequestBody LoginForm form,  HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<String> login(@RequestBody LoginForm form, HttpServletResponse response){
         String token = userService.authenticate(form.getUserId(), form.getPassword());
         response.addCookie(new Cookie(AUTHORIZATION_HEADER, BEARER_PREFIX + token));
         return ResponseEntity.ok("로그인 성공");

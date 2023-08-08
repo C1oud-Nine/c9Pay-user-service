@@ -1,7 +1,10 @@
 package com.c9Pay.userservice.security.jwt;
 
+import com.c9Pay.userservice.web.exception.IllegalTokenGenerationException;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -30,6 +34,12 @@ public class JwtTokenUtil {
     @Value("${jwt.time}")
     private long EXPIRATION_TIME;
 
+    private Key key;
+
+    @PostConstruct
+    public void createSecureKey(){
+        key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    }
     public String getToken(HttpServletRequest request){
         try{
             Optional<Cookie> cookies = Arrays.stream(request.getCookies())
@@ -42,9 +52,11 @@ public class JwtTokenUtil {
                 if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX))
                     return bearerToken.substring(7);
             }
-        }catch (Exception ignored){
+        }catch (Exception e){
+
             return null;
         }
+
         return null;
     }
 
@@ -53,12 +65,12 @@ public class JwtTokenUtil {
                 .setSubject(id)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(Instant.now().plus(EXPIRATION_TIME, ChronoUnit.MILLIS)))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY).compact();
+                .signWith(key).compact();
     }
 
     public boolean validateToken(String token){
         try{
-            Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         }catch (SignatureException e){
             log.info("Invalid Jwt signature");
@@ -71,7 +83,7 @@ public class JwtTokenUtil {
             log.trace("Expired Jwt token trace: {}", e);
         }catch (UnsupportedJwtException e){
             log.info("Unsupported Jwt token");
-            log.trace("Unsupported Jwt toekn trace: {}", e);
+            log.trace("Unsupported Jwt token trace: {}", e);
         }catch (IllegalArgumentException e){
             log.info("Jwt token compact of handler are invalid");
             log.trace("Jwt token compact of handler are invalid trace: {}", e);
@@ -79,14 +91,15 @@ public class JwtTokenUtil {
         return false;
     }
 
-    public String extractId(String token){return extractClaim(token, Claims::getSubject);}
+    public String extractId(String token){
+        return extractClaim(token, Claims::getSubject);}
     public Boolean validateToken(String token, UserDetails userDetails){
         final var id = extractId(token);
         return id.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
     private Claims extractAllClaims(String token){
         return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(key)
                 .build().parseClaimsJws(token)
                 .getBody();
     }
