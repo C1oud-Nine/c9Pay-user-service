@@ -1,5 +1,7 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
+import com.c9Pay.userservice.data.dto.credit.AccountDetails;
+import com.c9Pay.userservice.data.entity.User;
 import com.c9Pay.userservice.web.client.CreditClient;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.data.dto.credit.ChargeForm;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
 
@@ -28,7 +32,7 @@ public class CreditController {
 
     @PostMapping
     public ResponseEntity<?> chargeCredit(@Valid @RequestBody ChargeForm charge,
-                                          @RequestHeader(AUTHORIZATION_HEADER) String token){
+                                          @CookieValue(AUTHORIZATION_HEADER) String token){
         log.info("Before call credit service");
         String ID = parseToken(token);
         log.info("id {}", ID);
@@ -43,6 +47,15 @@ public class CreditController {
 
         log.info("After call credit service, serialNumber: {}", serialNumber);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public  ResponseEntity<?> getCredit(@CookieValue(AUTHORIZATION_HEADER) String token){
+        Long id = Long.valueOf(parseToken(token));
+        User findUser = userService.findById(id);
+        ResponseEntity<AccountDetails> account = creditClient.getAccount(findUser.getSerialNumber().toString());
+        ChargeForm form = new ChargeForm(Objects.requireNonNull(account.getBody()).getCredit());
+        return ResponseEntity.ok(form);
     }
 
     private String parseToken(String token) {

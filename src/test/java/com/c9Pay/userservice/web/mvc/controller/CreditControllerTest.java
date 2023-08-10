@@ -58,6 +58,7 @@ class CreditControllerTest {
                 .isEqualTo(3000L);
         deleteAccount(serialNumber);
      }
+
     private void deleteAccount(String serialNumber){
         ResponseEntity<?> deleteResponse = creditClient.deleteAccount(serialNumber);
         assertThat(deleteResponse.getStatusCode()).isEqualTo(OK);
