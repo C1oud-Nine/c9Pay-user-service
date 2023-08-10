@@ -1,4 +1,4 @@
-package com.c9Pay.userservice.web.exception;
+package com.c9Pay.userservice.web.exception.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
