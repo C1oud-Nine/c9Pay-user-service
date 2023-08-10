@@ -1,10 +1,8 @@
 package com.c9Pay.userservice.security;
 
-import com.c9Pay.userservice.constant.BearerConstant;
 import com.c9Pay.userservice.data.entity.User;
-import com.c9Pay.userservice.web.exception.UserNotFoundException;
+import com.c9Pay.userservice.web.exception.exceptions.UserNotFoundException;
 import com.c9Pay.userservice.web.mvc.repository.UserRepository;
-import com.c9Pay.userservice.web.mvc.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,8 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
