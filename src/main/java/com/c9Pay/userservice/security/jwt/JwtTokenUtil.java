@@ -1,6 +1,5 @@
 package com.c9Pay.userservice.security.jwt;
 
-import com.c9Pay.userservice.web.exception.IllegalTokenGenerationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -65,7 +64,10 @@ public class JwtTokenUtil {
     }
 
     public String generateToken(String id){
+        Claims claims = Jwts.claims();
+        claims.put("type", "user");
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(id)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(Instant.now().plus(EXPIRATION_TIME, ChronoUnit.MILLIS)))
@@ -104,7 +106,8 @@ public class JwtTokenUtil {
     private Claims extractAllClaims(String token){
         return Jwts.parserBuilder()
                 .setSigningKey(key)
-                .build().parseClaimsJws(token)
+                .build()
+                .parseClaimsJws(token)
                 .getBody();
     }
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
