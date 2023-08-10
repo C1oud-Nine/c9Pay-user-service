@@ -1,24 +1,19 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
-import com.c9Pay.userservice.constant.CookieConstant;
 import com.c9Pay.userservice.data.dto.user.LoginForm;
 import com.c9Pay.userservice.data.dto.user.UserDto;
 import com.c9Pay.userservice.data.entity.User;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.web.client.CreditClient;
-import com.c9Pay.userservice.web.exception.IllegalTokenDetailException;
-import com.c9Pay.userservice.web.exception.UserNotFoundException;
+import com.c9Pay.userservice.web.exception.exceptions.IllegalTokenDetailException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.BadCredentialsException;
 
