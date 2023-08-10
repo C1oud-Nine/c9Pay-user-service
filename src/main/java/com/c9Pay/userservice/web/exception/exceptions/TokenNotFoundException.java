@@ -1,4 +1,4 @@
-package com.c9Pay.userservice.web.exception;
+package com.c9Pay.userservice.web.exception.exceptions;
 
 public class TokenNotFoundException extends RuntimeException {
     public TokenNotFoundException(){

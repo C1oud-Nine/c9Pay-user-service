@@ -2,8 +2,8 @@ package com.c9Pay.userservice.web.mvc.service;
 
 import com.c9Pay.userservice.data.entity.User;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
-import com.c9Pay.userservice.web.exception.DuplicatedUserException;
-import com.c9Pay.userservice.web.exception.UserNotFoundException;
+import com.c9Pay.userservice.web.exception.exceptions.DuplicatedUserException;
+import com.c9Pay.userservice.web.exception.exceptions.UserNotFoundException;
 import com.c9Pay.userservice.data.dto.user.UserUpdateParam;
 import com.c9Pay.userservice.web.mvc.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

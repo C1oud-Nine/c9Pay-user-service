@@ -3,8 +3,10 @@ package com.c9Pay.userservice.web.mvc.controller;
 import com.c9Pay.userservice.web.client.CreditClient;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.data.dto.credit.ChargeForm;
-import com.c9Pay.userservice.web.exception.IllegalTokenDetailException;
+import com.c9Pay.userservice.web.exception.exceptions.IllegalTokenDetailException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,8 @@ public class CreditController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> chargeCredit(@Valid @RequestBody ChargeForm charge, @RequestHeader(AUTHORIZATION_HEADER) String token){
+    public ResponseEntity<?> chargeCredit(@Valid @RequestBody ChargeForm charge,
+                                          @RequestHeader(AUTHORIZATION_HEADER) String token){
         log.info("Before call credit service");
         String ID = parseToken(token);
         log.info("id {}", ID);

@@ -7,7 +7,7 @@ Cookie: Authorization=Bearer+eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjkxMT
 {
   "username": "vv",
   "email":"aaa@bbb.ccc",
-  "userId": "vvv3",
+  "userId": "vv22",
   "password": "v2v"
 }
 
@@ -16,7 +16,7 @@ POST {{user-api}}/api/user/signup
 Content-Type: application/json
 
 {
-  "userId":"vv22",
+  "userId":"aa",
   "username": "dummy",
   "password": "vv",
   "email": "abd@gmail.com"
