@@ -51,7 +51,7 @@ class UserControllerTest {
     public void testSingUp(){
         //given
         UserDto form = new UserDto("test-dummy", "test-id",
-                "test-password"," ");
+                "test-password","test@email.com");
         //when
         ResponseEntity<?> signUpResponse = userController.signUp(form);
         User findUser = userService
@@ -63,7 +63,7 @@ class UserControllerTest {
         assertThat(findUser.getUserId()).isEqualTo("test-id");
         assertThat(findUser.getUsername()).isEqualTo("test-dummy");
         assertTrue(passwordEncoder.matches("test-password", findUser.getPassword()));
-        //assertThat(findUser.getEmail()).isEqualTo("test@email.com");
+        assertThat(findUser.getEmail()).isEqualTo("test@email.com");
         validateSerialNumber(findUser.getSerialNumber().toString());
         deleteAccount(findUser.getSerialNumber().toString());
         userService.deleteUserById(findUser.getId());
@@ -137,13 +137,14 @@ class UserControllerTest {
     public void testDeleteUser(){
         //given
         UserDto dto = new UserDto("TEST", "TEST","TEST11", "korea@japan.china");
+        MockHttpServletRequest request = new MockHttpServletRequest();
         ResponseEntity<?> responseEntity = userController.signUp(dto);
         String serialNumber = requireNonNull(responseEntity.getBody()).toString();
         User findUser=  userService.findUserByUserId("TEST");
         String token = jwtTokenUtil.generateToken(String.valueOf(findUser.getId()));
         HttpServletResponse response = new MockHttpServletResponse();
         //when
-        ResponseEntity<?> deleteResponse = userController.deleteUser("Bearer+" + token, response);
+        ResponseEntity<?> deleteResponse = userController.deleteUser("Bearer+" + token, request,response);
         //then
         assertThat(deleteResponse.getStatusCode()).isEqualTo(OK);
         assertThat(requireNonNull(deleteResponse.getBody()).toString()).isEqualTo("삭제 요청 성공.");
@@ -164,7 +165,7 @@ class UserControllerTest {
         HttpServletResponse response = new MockHttpServletResponse();
         UserUpdateParam param = new UserUpdateParam("aa","bb", "cc", "dd");
         //when
-        ResponseEntity<?> updateResponse = userController.updateUserInfo("Bearer+" + token, param, response);
+        ResponseEntity<?> updateResponse = userController.updateUserInfo("Bearer+" + token, param,response);
         User updatedUser = userService.findUserByUserId("dd");
         //then
         assertThat(updateResponse.getStatusCode()).isEqualTo(OK);

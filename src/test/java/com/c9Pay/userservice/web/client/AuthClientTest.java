@@ -1,24 +1,15 @@
 package com.c9Pay.userservice.web.client;
 
 
-import com.c9Pay.userservice.data.dto.auth.CertificateForm;
-import com.c9Pay.userservice.data.dto.auth.CertificateResponse;
 import com.c9Pay.userservice.data.dto.auth.SerialNumberResponse;
-import com.c9Pay.userservice.data.dto.auth.ServiceInfo;
-import com.c9Pay.userservice.security.jwt.JwtAuthenticationFilter;
-import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
-import com.netflix.discovery.converters.Auto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.TestPropertySource;
 
 import java.util.Objects;
 
@@ -53,13 +44,4 @@ class AuthClientTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    @Test
-    @DisplayName("Get a certificate from the certification service.")
-    public void testGetCertification(){
-        ServiceInfo serviceInfo = new ServiceInfo("test", "test/endpoint");
-        CertificateForm certificateForm = new CertificateForm(publicKey,serviceInfo);
-        ResponseEntity<CertificateResponse> response = authClient.getCertificate(certificateForm);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-    }
 }

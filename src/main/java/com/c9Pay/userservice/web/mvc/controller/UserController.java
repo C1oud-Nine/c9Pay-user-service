@@ -57,7 +57,8 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token, HttpServletResponse response){
+    public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token, HttpServletRequest request
+            , HttpServletResponse response){
         String ID = parseToken(token);
         Long targetId = Long.valueOf(ID);
         String serialNumber = userService
