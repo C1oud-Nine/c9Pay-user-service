@@ -18,6 +18,13 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 
 /**
  * QR 정보 처리 관리하는 컨트롤러
+ *
+ * @see com.c9Pay.userservice.data.dto.auth.ExchangeToken
+ * @see com.c9Pay.userservice.data.entity.User
+ * @see com.c9Pay.userservice.security.jwt.JwtTokenUtil
+ * @see com.c9Pay.userservice.web.client.AuthClient
+ * @see com.c9Pay.userservice.web.mvc.service.UserService
+ * @see jakarta.servlet.http.HttpServletRequest
  */
 @Slf4j
 @RestController

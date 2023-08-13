@@ -22,6 +22,16 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 
 /**
  * 크레딧 서비스와 통신을 관리하는 컨트롤러
+ *
+ * @see com.c9Pay.userservice.data.dto.credit.AccountDetails
+ * @see com.c9Pay.userservice.data.entity.User
+ * @see com.c9Pay.userservice.web.client.CreditClient
+ * @see com.c9Pay.userservice.security.jwt.JwtTokenUtil
+ * @see com.c9Pay.userservice.data.dto.credit.ChargeForm
+ * @see com.c9Pay.userservice.web.exception.exceptions.IllegalTokenDetailException
+ * @see com.c9Pay.userservice.web.mvc.service.UserService
+ * @see jakarta.servlet.http.HttpServletRequest
+ * @see jakarta.servlet.http.HttpServletResponse
  */
 @Slf4j
 @RestController

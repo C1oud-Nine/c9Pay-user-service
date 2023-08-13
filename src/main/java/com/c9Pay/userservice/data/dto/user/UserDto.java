@@ -11,6 +11,7 @@ import java.util.UUID;
 
 /**
  * 사용자 정보 데이터 전송 객체를 나타내는 클래스
+ * @see com.c9Pay.userservice.data.entity.User
  */
 @Data
 @AllArgsConstructor
