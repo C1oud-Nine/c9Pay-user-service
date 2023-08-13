@@ -35,6 +35,7 @@ public class GlobalExceptionHandler {
                     exceptionResponse.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
                 }
             }
+            return ResponseEntity.status(BAD_REQUEST).body(exceptionResponse);
         }
         exceptionResponse =
                 new ExceptionResponse(new Date(), e.getMessage(), request.getDescription(false));
