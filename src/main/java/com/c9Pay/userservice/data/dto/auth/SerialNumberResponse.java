@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/**
+ * 인증 서비스와 통신 중 사용될 개체 식별번호를 담고 있는 데이터 전송 객체 클래스
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

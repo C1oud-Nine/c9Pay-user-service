@@ -19,6 +19,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+
+/**
+ * Spring Security 설정을 구성하는 클래스
+ */
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
@@ -27,10 +31,21 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter authenticationFilter;
     private final AuthenticationProvider authenticationProvider;
     private final AuthenticationEntryPoint authenticationEntryPoint;
+    /**
+     * h2-console에 대한 접근을 허용한다.
+     */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
     }
+
+    /**
+     * Security Filter Chain을 설정한다.
+     *
+     * @param http HttpSecurity 객체
+     * @return Security Filter Chain 객체
+     * @throws Exception 예외
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
@@ -51,6 +66,13 @@ public class SecurityConfig {
     }
 
 
+    /**
+     * AuthenticationManager를 빈으로 등록한다.
+     *
+     * @param authenticationConfiguration AuthenticationConfiguration 객체
+     * @return AuthenticationManager 객체
+     * @throws Exception 예외
+     */
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration)

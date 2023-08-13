@@ -18,7 +18,9 @@ import java.io.IOException;
 
 import static com.c9Pay.userservice.constant.BearerConstant.BEARER_PREFIX;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
-
+/**
+ * 사용자 로그인을 처리하는 컨트롤러.
+ */
 @Slf4j
 @RestController
 @RequestMapping
@@ -26,6 +28,14 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 public class LoginController {
     private final UserService userService;
 
+
+    /**
+     * 사용자 로그인을 처리한다.
+     *
+     * @param form 사용자 로그인 정보를 담고 있는 LoginForm 객체
+     * @param response HTTP 응답 객체
+     * @return 로그인 성공 시 성공 메세지를 담은 ResponseEntity 반환
+     */
     @PostMapping("/api/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginForm form, HttpServletResponse response){
         String token = userService.authenticate(form.getUserId(), form.getPassword());

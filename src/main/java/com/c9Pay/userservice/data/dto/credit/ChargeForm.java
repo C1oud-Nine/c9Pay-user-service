@@ -8,6 +8,9 @@ import org.hibernate.annotations.CurrentTimestamp;
 
 import java.util.Date;
 
+/**
+ * 계좌 송금, 충전을 위한 Credit 정보를 담는 전송 객체 클래스
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

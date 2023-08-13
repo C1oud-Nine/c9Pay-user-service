@@ -29,6 +29,12 @@ public class UserService {
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * 새로운 사용자를 등록한다.
+     *
+     * @param user 등록할 사용자 객체
+     * @throws DuplicatedUserException 이미 존재하는 사용자 ID일 경우 발생하는 예외
+     */
     @Transactional
     public void signUp(User user){
         if(!validateDuplicateUserId(user.getUserId()))
@@ -38,6 +44,14 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * 사용자 인증을 처리하고 인증 토큰을 반환한다.
+     *
+     * @param userId 사용자 아이디
+     * @param password 사용자 비밀번호
+     * @return 인증된 사용자의 인증 토콘
+     * @throws UserNotFoundException 사용자가 존재하지 않을 경우 발생하는 예외
+     */
     public String authenticate(String userId, String password){
         User findUser = userRepository.findByUserId(userId).orElseThrow(() -> new UserNotFoundException(String.format("User ID[%s] not found",userId )));
         log.info("find user id : {}", Objects.requireNonNull(findUser).getId());
@@ -52,14 +66,33 @@ public class UserService {
         return jwtTokenUtil.generateToken(findUser.getId().toString());
     }
 
+    /**
+     * 사용자 ID를 기반으로 사용자를 조회한다.
+     *
+     * @param userId 조회할 사용자의 ID
+     * @return 조회된 사용자 객체
+     * @throws UserNotFoundException 사용자가 존재하지 않을 경우 발생하는 예외
+     */
     public User findUserByUserId(String userId){
         return userRepository.findByUserId(userId).orElseThrow(()-> new UserNotFoundException(String.format("User ID[%s] not found",userId )));
     }
 
+    /**
+     * 주어진 사용자 ID가 중복되는지 검사한다.
+     *
+     * @param userId 검사할 사용자 ID
+     * @return 중복되지 않으면 true, 중복되면 false 반환
+     */
     public boolean validateDuplicateUserId(String userId){
         return userRepository.findByUserId(userId).isEmpty();
     }
 
+    /**
+     * 주어진 ID를 사용하여 사용자를 삭제한다.
+     *
+     * @param id 삭제할 사용자의 ID
+     * @throws UserNotFoundException 사용자가 존재하지 않을 경우 발생하는 예외
+     */
     @Transactional
     public void deleteUserById(Long id){
         userRepository.findById(id)
@@ -67,6 +100,14 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+
+    /**
+     * 주어진 ID를 사용하여 사용자 정보를 업데이트한다.
+     *
+     * @param id 업데이트할 사용자의 ID
+     * @param param 업데이트할 사용자 정보를 담은 UserUpdateParam 객체
+     * @throws DuplicatedUserException 동일한 사용자 ID가 이미 존재할 경우 발생하는 예외
+     */
     @Transactional
     public void updateUserById(Long id, UserUpdateParam param){
         User findUser = findById(id);
@@ -77,16 +118,36 @@ public class UserService {
         findUser.updateUser(param);
     }
 
+    /**
+     * 주어진 시리얼 번호를 사용하여 사용자를 조회한다.
+     *
+     * @param serialNumber 조회할 사용자의 객체식별번호
+     * @return 조회된 사용자 객체
+     * @throws UserNotFoundException 사용자가 존재하지 않을 경우 발생하는 예외
+     */
     public User findBySerialNumber(String serialNumber){
         return userRepository.findBySerialNumber(UUID.fromString(serialNumber))
                 .orElseThrow(()-> new UserNotFoundException
                         (String.format("SERIAL-NUMBER[%s] doesn't exit.", serialNumber)));
     }
+
+    /**
+     * 주어진 ID를 사용하여 사용자를 조회한다.
+     *
+     * @param id 조회할 사용자의 ID
+     * @return 조회된 사용자 객체
+     * @throws UserNotFoundException 사용자가 존재하지 않을 경우 발생하는 예외
+     */
     public User findById(Long id){
         return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(String.format("ID[%s] not found", id)));
     }
 
 
+    /**
+     * 주어진 이름을 사용하여 사용자를 삭제한다.
+     *
+     * @param name 삭제할 사용자의 이름
+     */
     public void deleteOneByName(String name){
         userRepository.deleteByUsername(name);
     }

@@ -22,8 +22,18 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+/**
+ * 전역 예외 처리를 담담하는 클래스
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * 모든 예외에 대한 처리를 수행한다.
+     *
+     * @param e 발생한 예외 객체
+     * @param request 현재 웹 요청 객체
+     * @return 예외 정보를 담는 ResponseEntity 객체
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> duplicateUserExceptionHandler(Exception e, WebRequest request){
         ExceptionResponse exceptionResponse;
