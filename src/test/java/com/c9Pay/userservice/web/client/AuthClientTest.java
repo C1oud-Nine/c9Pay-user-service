@@ -22,8 +22,6 @@ class AuthClientTest {
 
 
     @Autowired private AuthClient authClient;
-    @Value("${rsa.public-key}")
-    private String publicKey;
     @Test
     @DisplayName("Getting object identification numbers from authentication services")
     public void testGetSerialNumber() {

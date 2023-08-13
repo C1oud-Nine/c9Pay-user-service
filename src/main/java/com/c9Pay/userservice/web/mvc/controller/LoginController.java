@@ -29,9 +29,10 @@ public class LoginController {
     @PostMapping("/api/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginForm form, HttpServletResponse response){
         String token = userService.authenticate(form.getUserId(), form.getPassword());
-        response.addCookie(new Cookie(AUTHORIZATION_HEADER, BEARER_PREFIX + token));
+        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, BEARER_PREFIX + token);
+        cookie.setPath("/");
+        response.addCookie(cookie);
         return ResponseEntity.ok("로그인 성공");
     }
-
 
 }
