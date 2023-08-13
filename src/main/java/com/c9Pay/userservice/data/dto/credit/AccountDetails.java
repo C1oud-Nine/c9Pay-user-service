@@ -7,6 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 계좌를 정보를 담고있는 데이터 전송 객체 클래스
+ *
+ * @see com.c9Pay.userservice.web.client.CreditClient
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

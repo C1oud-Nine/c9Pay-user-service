@@ -23,6 +23,9 @@ import java.util.function.Function;
 import static com.c9Pay.userservice.constant.BearerConstant.BEARER_PREFIX;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
 
+/**
+ * JWT 토큰 유틸리티 클래스입니다. JWT 토큰 생성, 검증 등의 기능을 제공한다.
+ */
 @Slf4j
 @Component
 public class JwtTokenUtil {
@@ -39,6 +42,13 @@ public class JwtTokenUtil {
     public void createSecureKey(){
         key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
+
+    /**
+     * Http 요청 cookie에서  jwt 인증을 위한 토큰 값을 가져온다.
+     *
+     * @param request HTTP 요청 객체
+     * @return 추출한 JWT 토큰 문자열
+     */
     public String getToken(HttpServletRequest request){
         try{
             Optional<Cookie> cookies = Arrays.stream(request.getCookies())
@@ -63,6 +73,13 @@ public class JwtTokenUtil {
         return key;
     }
 
+
+    /**
+     * 사용자 ID를 기반으로 JWT 토큰을 생성한다.
+     *
+     * @param id 사용자의 ID
+     * @return 생성된 JWT 토큰 문자열
+     */
     public String generateToken(String id){
         Claims claims = Jwts.claims();
         claims.put("type", "user");
@@ -74,6 +91,12 @@ public class JwtTokenUtil {
                 .signWith(key).compact();
     }
 
+    /**
+     * 주어진 JWT 토큰의 유효성을 검사한다,
+     *
+     * @param token 검사할 JWT 토큰 문자열
+     * @return 유효한 토큰일 경우 true, 그렇지 않을 경우 false 반환
+     */
     public boolean validateToken(String token){
         try{
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -97,12 +120,33 @@ public class JwtTokenUtil {
         return false;
     }
 
+    /**
+     * JWT 토큰에서 사용자 DB ID를 추출한다.
+     *
+     * @param token JWT 토큰 문자열
+     * @return 추출한 사용자 ID 문자열
+     */
     public String extractId(String token){
         return extractClaim(token, Claims::getSubject);}
+
+    /**
+     * 주어진 JWT 토큰의 유효성을 검사하고, 해당 토큰이 주어진 사용자의 토큰인지도 검사한다.
+     *
+     * @param token        검사할 JWT 토큰 문자열
+     * @param userDetails 검사할 사용자의 UserDetails 객체
+     * @return 주어진 토큰이 유효하고 주어진 사용자의 토큰일 경우 true, 그렇지 않을 경우 false 반환
+     */
     public Boolean validateToken(String token, UserDetails userDetails){
         final var id = extractId(token);
         return id.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
+
+    /**
+     * 주어진 JWT 토큰에서 모든 클레임 정보를 추출한다.
+     *
+     * @param token 추출할 JWT 토큰 문자열
+     * @return 토큰에서 추출한 클레임 정보를 포함한 Claims 객체
+     */
     private Claims extractAllClaims(String token){
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -110,12 +154,35 @@ public class JwtTokenUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    /**
+     * 주어진 JWT 토큰에서 특정 클레임을 추출한다.
+     *
+     * @param token           추출할 JWT 토큰 문자열
+     * @param claimsResolver 특정 클레임을 추출하는 함수형 인터페이스
+     * @param <T>             추출할 클레임의 타입
+     * @return 추출한 클레임 정보
+     */
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
+
+    /**
+     * 주어진 JWT 토큰에서 만료 시간을 추출한다.
+     *
+     * @param token 추출할 JWT 토큰 문자열
+     * @return 토큰의 만료 시간
+     */
     private Date extractExpiration(String token){ return extractClaim(token, Claims::getExpiration);}
+
+    /**
+     * 주어진 JWT 토큰이 만료되었는지 검사한다.
+     *
+     * @param token 검사할 JWT 토큰 문자열
+     * @return 토큰이 만료되었을 경우 true, 그렇지 않을 경우 false 반환
+     */
     public Boolean isTokenExpired(String token){ return extractExpiration(token).before(new Date());}
 
 }

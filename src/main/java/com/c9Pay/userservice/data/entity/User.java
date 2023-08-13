@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+
+/**
+ * 사용자 정보를 저장하는 엔티티 클래스
+ */
 @Entity
 @Getter
 @Table(name= "users")
@@ -43,12 +47,23 @@ public class User extends BaseTimeEntity {
     private UUID serialNumber;
 
 
+
+    /**
+     * 사용자 정보를 업데이트한다.
+     *
+     * @param param UserUpdateParam 객체
+     */
     public void updateUser(UserUpdateParam param) {
         this.email = param.getEmail();
         this.password = param.getPassword();
         this.userId = param.getUserId();
         this.username = param.getUsername();
     }
+    /**
+     * 패스워드를 인코딩하여 저장한다.
+     *
+     * @param password 인코딩된 패스워드
+     */
     public void encodePassword(String password){
         this.password = password;
     }
