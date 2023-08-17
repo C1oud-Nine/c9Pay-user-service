@@ -66,7 +66,7 @@ public class UserController {
         User joinUser = form.toEntity(serialNumberResponse.getSerialNumber());
         userService.signUp(joinUser);
         log.info("Registration success");
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(serialNumber);
     }
 
     /**

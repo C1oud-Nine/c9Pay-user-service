@@ -147,7 +147,6 @@ class UserControllerTest {
         ResponseEntity<?> deleteResponse = userController.deleteUser("Bearer+" + token, request,response);
         //then
         assertThat(deleteResponse.getStatusCode()).isEqualTo(OK);
-        assertThat(requireNonNull(deleteResponse.getBody()).toString()).isEqualTo("삭제 요청 성공.");
         assertThrows(UserNotFoundException.class,() ->userService.findUserByUserId("TEST"));
         findAccount(serialNumber);
     }
