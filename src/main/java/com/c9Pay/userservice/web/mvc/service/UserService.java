@@ -38,7 +38,7 @@ public class UserService {
     @Transactional
     public void signUp(User user){
         if(!validateDuplicateUserId(user.getUserId()))
-            throw new DuplicatedUserException(String.format("ID[%s] is Duplicated", user.getUserId()));
+            throw new DuplicatedUserException();
         String encodedPassword= passwordEncoder.encode(user.getPassword());
         user.encodePassword(encodedPassword);
         userRepository.save(user);
@@ -53,7 +53,7 @@ public class UserService {
      * @throws UserNotFoundException 사용자가 존재하지 않을 경우 발생하는 예외
      */
     public String authenticate(String userId, String password){
-        User findUser = userRepository.findByUserId(userId).orElseThrow(() -> new UserNotFoundException(String.format("User ID[%s] not found",userId )));
+        User findUser = userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
         log.info("find user id : {}", Objects.requireNonNull(findUser).getId());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -74,7 +74,7 @@ public class UserService {
      * @throws UserNotFoundException 사용자가 존재하지 않을 경우 발생하는 예외
      */
     public User findUserByUserId(String userId){
-        return userRepository.findByUserId(userId).orElseThrow(()-> new UserNotFoundException(String.format("User ID[%s] not found",userId )));
+        return userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
     }
 
     /**
@@ -96,7 +96,7 @@ public class UserService {
     @Transactional
     public void deleteUserById(Long id){
         userRepository.findById(id)
-                .orElseThrow(()-> new UserNotFoundException(String.format("ID[%s] doesn't exist, can not delete", id)));
+                .orElseThrow(UserNotFoundException::new);
         userRepository.deleteById(id);
     }
 
@@ -113,7 +113,7 @@ public class UserService {
         User findUser = findById(id);
         String encode = passwordEncoder.encode(param.getPassword());
         if (!validateDuplicateUserId(param.getUserId()))
-            throw new DuplicatedUserException(String.format("[ID:%s] is already exist", param.getUserId()));
+            throw new DuplicatedUserException();
         param.setPassword(encode);
         findUser.updateUser(param);
     }
@@ -127,8 +127,7 @@ public class UserService {
      */
     public User findBySerialNumber(String serialNumber){
         return userRepository.findBySerialNumber(UUID.fromString(serialNumber))
-                .orElseThrow(()-> new UserNotFoundException
-                        (String.format("SERIAL-NUMBER[%s] doesn't exit.", serialNumber)));
+                .orElseThrow(UserNotFoundException::new);
     }
 
     /**
@@ -139,7 +138,7 @@ public class UserService {
      * @throws UserNotFoundException 사용자가 존재하지 않을 경우 발생하는 예외
      */
     public User findById(Long id){
-        return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(String.format("ID[%s] not found", id)));
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
 

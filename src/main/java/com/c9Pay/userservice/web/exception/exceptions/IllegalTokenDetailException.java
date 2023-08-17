@@ -16,6 +16,6 @@ public class IllegalTokenDetailException extends RuntimeException {
      * 잘못된 토큰 정보로 예외 객체를 생성한다.
      */
     public IllegalTokenDetailException() {
-        super("Invalid token info.");
+        super("101");
     }
 }

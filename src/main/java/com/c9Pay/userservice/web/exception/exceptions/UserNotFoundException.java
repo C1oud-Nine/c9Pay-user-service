@@ -13,9 +13,8 @@ public class UserNotFoundException extends RuntimeException {
     /**
      * 주어진 문자열 포멧을 사용하여 예외 객체를 생성한다.
      *
-     * @param format 예외 문자열 포멧
      */
-    public UserNotFoundException(String format) {
-        super(format);
+    public UserNotFoundException() {
+        super("102");
     }
 }

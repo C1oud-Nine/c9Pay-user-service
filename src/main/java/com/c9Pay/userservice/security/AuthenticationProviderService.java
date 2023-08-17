@@ -42,7 +42,7 @@ public class AuthenticationProviderService implements AuthenticationProvider {
         String id =authentication.getName();
         String password= authentication.getCredentials().toString();
         User user = userRepository.findById(Long.valueOf(id))
-                .orElseThrow(() -> new UserNotFoundException("user not found!"));
+                .orElseThrow(UserNotFoundException::new);
         log.debug("raw encoded {}", passwordEncoder.encode(password));
         log.debug("raw password: {}, encoded password {}", password, user.getPassword());
         log.debug("is matched? : {}", passwordEncoder.matches(password,user.getPassword()));
@@ -73,6 +73,6 @@ public class AuthenticationProviderService implements AuthenticationProvider {
     private Authentication checkPassword(User user, String rawPassword, PasswordEncoder encoder){
         if(encoder.matches(rawPassword,user.getPassword())){
             return new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), Collections.singleton(new SimpleGrantedAuthority(BEARER_PREFIX)));
-        }else throw new BadCredentialsException("Bad Credential!!!");
+        }else throw new BadCredentialsException("103");
     }
 }

@@ -66,7 +66,7 @@ public class UserController {
         User joinUser = form.toEntity(serialNumberResponse.getSerialNumber());
         userService.signUp(joinUser);
         log.info("Registration success");
-        return ResponseEntity.ok(serialNumber);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -104,7 +104,7 @@ public class UserController {
         response.addCookie(new Cookie(AUTHORIZATION_HEADER, null));
         userService.deleteUserById(targetId);
         creditClient.deleteAccount(serialNumber);
-        return ResponseEntity.ok("삭제 요청 성공.");
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -163,10 +163,8 @@ public class UserController {
      * @throws IllegalTokenDetailException 토큰이 유효하지 않거나 형식에 맞지 않을 경우 발생하는 예외
      */
     private String parseToken(String token) {
-        if(token.length() >= 7){
-            String parsedToken = token.substring(7);
-            return jwtTokenUtil.extractId(parsedToken);
-        }
-        throw new IllegalTokenDetailException();
+        if(token == null || token.length() < 7) throw new IllegalTokenDetailException();
+        String parsedToken = token.substring(7);
+        return jwtTokenUtil.extractId(parsedToken);
     }
 }

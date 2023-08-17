@@ -13,9 +13,8 @@ public class DuplicatedUserException extends RuntimeException {
     /**
      * 주어진 문자열 포멧를 사용하여 예외 객체를 생성한다.
      *
-     * @param format 예외 문자열 포멧
      */
-    public DuplicatedUserException(String format) {
-        super(format);
+    public DuplicatedUserException() {
+        super("100");
     }
 }

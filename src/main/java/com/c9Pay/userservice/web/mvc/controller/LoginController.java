@@ -50,7 +50,7 @@ public class LoginController {
         Cookie cookie = new Cookie(AUTHORIZATION_HEADER, BEARER_PREFIX + token);
         cookie.setPath("/");
         response.addCookie(cookie);
-        return ResponseEntity.ok("로그인 성공");
+        return ResponseEntity.ok().build();
     }
 
 }
