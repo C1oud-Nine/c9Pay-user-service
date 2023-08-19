@@ -2,6 +2,7 @@ package com.c9Pay.userservice.data.dto.user;
 
 import com.c9Pay.userservice.data.entity.User;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
@@ -22,8 +23,8 @@ public class UserResponse {
     @NotBlank
     @Email
     private String email;
-    @NotBlank
-    private String serialNumber;
+    @Min(0)
+    private Long credit;
 
     /**
      * User 엔티티 객체를 UserResponse 객체로 매핑하여 반환한다.
@@ -31,12 +32,12 @@ public class UserResponse {
      * @param user User 엔티티 객체
      * @return 매핑된 UserResponse 객체
      */
-    public static UserResponse mapping(User user){
+    public static UserResponse mapping(User user, Long credit){
         return UserResponse.builder()
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .username(user.getUsername())
-                .serialNumber(user.getSerialNumber().toString())
+                .credit(credit)
                 .build();
     }
 }

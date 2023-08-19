@@ -15,6 +15,7 @@ spring:
       ddlAuto: create
     databasePlatform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
+
 server:
   port: 8083
 

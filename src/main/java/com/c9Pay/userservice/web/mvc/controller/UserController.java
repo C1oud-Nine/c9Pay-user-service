@@ -1,5 +1,6 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
+import com.c9Pay.userservice.data.dto.credit.AccountDetails;
 import com.c9Pay.userservice.data.dto.user.UserResponse;
 import com.c9Pay.userservice.web.client.AuthClient;
 import com.c9Pay.userservice.web.client.CreditClient;
@@ -57,7 +58,8 @@ public class UserController {
      */
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody @Valid UserDto form){
-        log.info("Starting registration for a new user account");
+        log.info("Starting registrati" +
+                "on for a new user account");
         SerialNumberResponse serialNumberResponse = authClient.getSerialNumber().getBody();
         if(serialNumberResponse == null) throw new TokenGenerationFailureException();
         String serialNumber = serialNumberResponse.getSerialNumber().toString();
@@ -80,7 +82,9 @@ public class UserController {
         String ID = parseToken(token);
         Long targetId = Long.valueOf(ID);
         User findUser = userService.findById(targetId);
-        UserResponse response = UserResponse.mapping(findUser);
+        AccountDetails account = creditClient.getAccount(findUser.getSerialNumber().toString()).getBody();
+        if(account == null || account.getCredit() == null) throw new NullPointerException();
+        UserResponse response = UserResponse.mapping(findUser,account.getCredit());
         return ResponseEntity.ok(response);
     }
 
