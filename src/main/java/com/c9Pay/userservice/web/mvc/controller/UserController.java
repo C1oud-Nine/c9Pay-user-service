@@ -152,10 +152,10 @@ public class UserController {
      * @param request HTTP 요청 객체
      * @return 사용자 아이디가 중복되지 않으면 OK응답, 중복될 경우 Bad Request 응답을 반환한다.
      */
-    @GetMapping("/check-duplicate")
-    public ResponseEntity<?> checkDuplicated(HttpServletRequest request){
+    @GetMapping("/check-duplicate/{userId}")
+    public ResponseEntity<?> checkDuplicated(@PathVariable("userId")String userId){
 
-        return userService.validateDuplicateUserId(request.getHeader("userId"))?
+        return userService.validateDuplicateUserId(userId)?
         ResponseEntity.ok().build(): ResponseEntity.badRequest().build();
     }
 

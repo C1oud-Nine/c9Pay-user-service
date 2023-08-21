@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->  auth
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/user/signup")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/login")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/user-service/api/user/check-duplicate")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/user-service/api/user/check-duplicate/*")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/**")).hasAuthority("USER")
                         .anyRequest().authenticated())
