@@ -2,6 +2,7 @@ package com.c9Pay.userservice.web.mvc.controller;
 
 import com.c9Pay.userservice.data.dto.credit.AccountDetails;
 import com.c9Pay.userservice.data.dto.user.UserResponse;
+import com.c9Pay.userservice.security.jwt.JwtParser;
 import com.c9Pay.userservice.web.client.AuthClient;
 import com.c9Pay.userservice.web.client.CreditClient;
 import com.c9Pay.userservice.data.entity.User;
@@ -21,8 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 import static com.c9Pay.userservice.constant.BearerConstant.BEARER_PREFIX;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
+import static com.c9Pay.userservice.data.dto.user.UserResponse.mapping;
 
 /**
  * 사용자 정보 처리에 대한 컨트롤러
@@ -46,9 +50,9 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 public class UserController {
     private final CreditClient creditClient;
     private final AuthClient authClient;
-    private final UserService userService;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtParser jwtParser;
 
+    private final UserService userService;
     /**
      * 신규 회원을 등록한다.
      *
@@ -75,12 +79,13 @@ public class UserController {
      */
     @GetMapping
     public ResponseEntity<?> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
-        String ID = parseToken(token);
-        Long targetId = Long.valueOf(ID);
-        User findUser = userService.findById(targetId);
-        AccountDetails account = creditClient.getAccount(findUser.getSerialNumber().toString()).getBody();
-        if(account == null || account.getCredit() == null) throw new NullPointerException();
-        UserResponse response = UserResponse.mapping(findUser,account.getCredit());
+        String serialNumber = jwtParser.getSerialNumberByToken(token);
+        AccountDetails account = creditClient.getAccount(serialNumber).getBody();
+        User findUser = jwtParser.getUserByToken(token);
+
+        UserResponse response = mapping(findUser,
+                Objects.requireNonNull(account).getCredit());
+
         return ResponseEntity.ok(response);
     }
 
@@ -88,21 +93,16 @@ public class UserController {
      * 특정 사용자의 계정을 삭제한다.
      *
      * @param token 사용자의 인증 토큰이 포함된 쿠키 값
-     * @param request HTTP 요청 객체
      * @param response HTTP 응답 객체
      * @return 계정 삭제 요청의 성공 여부를 담은 ResponseEntity 반환
      */
     @DeleteMapping
-    public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token, HttpServletRequest request
-            , HttpServletResponse response){
-        String ID = parseToken(token);
-        Long targetId = Long.valueOf(ID);
-        String serialNumber = userService
-                .findById(targetId)
-                .getSerialNumber().toString();
+    public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token, HttpServletResponse response){
+        String serialNumber = jwtParser.getSerialNumberByToken(token);
+        Long id = jwtParser.getIdByToken(token);
 
         response.addCookie(new Cookie(AUTHORIZATION_HEADER, null));
-        userService.deleteUserById(targetId);
+        userService.deleteUserById(id);
         creditClient.deleteAccount(serialNumber);
         return ResponseEntity.ok().build();
     }
@@ -119,8 +119,7 @@ public class UserController {
     public ResponseEntity<?> updateUserInfo(@CookieValue(AUTHORIZATION_HEADER) String token,
                                             @Valid@RequestBody UserUpdateParam param,
                                             HttpServletResponse response){
-        String ID = parseToken(token);
-        Long targetId = Long.valueOf(ID);
+        Long targetId = jwtParser.getIdByToken(token);
         String password = param.getPassword();
         userService.updateUserById(targetId, param);
         String newToken = userService.authenticate(param.getUserId(), password);
@@ -136,9 +135,8 @@ public class UserController {
      */
     @GetMapping("/serial-number")
     public ResponseEntity<?> getSerialNumber(@CookieValue(AUTHORIZATION_HEADER) String token){
-        String ID = parseToken(token);
-        User findUser = userService.findById(Long.valueOf(ID));
-        return ResponseEntity.ok(findUser.getSerialNumber().toString());
+        String serialNumber = jwtParser.getSerialNumberByToken(token);
+        return ResponseEntity.ok(serialNumber);
     }
 
     /**
@@ -152,16 +150,4 @@ public class UserController {
         ResponseEntity.ok().build(): ResponseEntity.badRequest().build();
     }
 
-    /**
-     * 주어진 인증토큰에서 사용자 ID를 추출한다.
-     *
-     * @param token 인증 토큰 문자열
-     * @return 추출된 사용자 ID
-     * @throws IllegalTokenDetailException 토큰이 유효하지 않거나 형식에 맞지 않을 경우 발생하는 예외
-     */
-    private String parseToken(String token) {
-        if(token == null || token.length() < 7) throw new IllegalTokenDetailException();
-        String parsedToken = token.substring(7);
-        return jwtTokenUtil.extractId(parsedToken);
-    }
 }

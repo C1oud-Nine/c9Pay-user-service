@@ -93,8 +93,7 @@ class UserControllerTest {
     public void testGetUserDetails(){
         //given
         UserDto dto = new UserDto("testA","test", "testB", "test@test.test");
-        User user = dto.toEntity(UUID.randomUUID());
-        userService.signUp(user);
+        userController.signUp(dto);
         User findUser = userService.findUserByUserId("test");
         //when
         String token = jwtTokenUtil.generateToken(String.valueOf(findUser.getId()));
@@ -106,7 +105,6 @@ class UserControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(requireNonNull(body).getUsername()).isEqualTo("testA");
         assertThat(requireNonNull(body).getUserId()).isEqualTo("test");
-        assertThat(requireNonNull(body).getEmail()).isEqualTo("test@test.test");
     }
 
     @Test
@@ -115,8 +113,7 @@ class UserControllerTest {
         //given
         UserDto dto = new UserDto("testA", "test123",
                 "testB", "test@test.test");
-        User user = dto.toEntity(UUID.randomUUID());
-        userService.signUp(user);
+        userController.signUp(dto);
         User findUser = userService.findUserByUserId("test123");
         //when
         String token = jwtTokenUtil.generateToken(String.valueOf(findUser.getId()));
@@ -144,7 +141,7 @@ class UserControllerTest {
         String token = jwtTokenUtil.generateToken(String.valueOf(findUser.getId()));
         HttpServletResponse response = new MockHttpServletResponse();
         //when
-        ResponseEntity<?> deleteResponse = userController.deleteUser("Bearer+" + token, request,response);
+        ResponseEntity<?> deleteResponse = userController.deleteUser("Bearer+" + token, response);
         //then
         assertThat(deleteResponse.getStatusCode()).isEqualTo(OK);
         assertThrows(UserNotFoundException.class,() ->userService.findUserByUserId("TEST"));
@@ -198,10 +195,8 @@ class UserControllerTest {
     @DisplayName("user id duplication check/ success")
     public void testDuplication() {
         //given
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("userId", "newId");
         //when
-        ResponseEntity<?> response = userController.checkDuplicated(request);
+        ResponseEntity<?> response = userController.checkDuplicated("newId");
         //then
         assertThat(response.getStatusCode()).isEqualTo(OK);
      }
@@ -213,10 +208,8 @@ class UserControllerTest {
          UserDto dto = new UserDto("Dummy", "Dummy","TEST11", "korea@japan.china");
          User savedUser = dto.toEntity(UUID.randomUUID());
          userService.signUp(savedUser);
-         MockHttpServletRequest request=  new MockHttpServletRequest();
          //when
-         request.addHeader("userId", "Dummy");
-         ResponseEntity<?> fail = userController.checkDuplicated(request);
+         ResponseEntity<?> fail = userController.checkDuplicated("Dummy");
          //then
          assertThat(fail.getStatusCode()).isEqualTo(BAD_REQUEST);
          userService.deleteOneByName("Dummy");
@@ -229,14 +222,6 @@ class UserControllerTest {
     private void validateSerialNumber(String id){
         ResponseEntity<?> responseEntity = authClient.validateSerialNumber(id);
         assertThat(responseEntity.getStatusCode()).isEqualTo(OK);
-    }
-
-    private String parseToken(String token) {
-        if(token.length() >= 7){
-            String parsedToken = token.substring(7);
-            return jwtTokenUtil.extractId(parsedToken);
-        }
-        throw new IllegalTokenDetailException();
     }
 
     private void findAccount(String serialNumber) {
