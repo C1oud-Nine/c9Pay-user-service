@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -53,8 +54,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
-                .cors(withDefaults())
                 .authorizeHttpRequests(auth ->  auth
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/user/signup")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/login")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/user/check-duplicate/*")).permitAll()
@@ -67,6 +68,7 @@ public class SecurityConfig {
                 .headers((header) -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(withDefaults())
                 .build();
     }
 
@@ -89,8 +91,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOrigin("http://localhost:63342");
-        configuration.addAllowedOrigin("http://www.teamcloudnine.link");
+        configuration.addAllowedOrigin("http://web.teamcloudnine.link");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
