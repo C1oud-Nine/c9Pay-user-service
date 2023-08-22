@@ -8,6 +8,6 @@ public class TokenGenerationFailureException extends RuntimeException {
      * 토큰 생성 실패 예외 객체를 생성한다.
      */
     public TokenGenerationFailureException(){
-        super("Token generation failure(user-service)");
+        super("500");
     }
 }

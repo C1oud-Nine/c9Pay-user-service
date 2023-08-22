@@ -2,13 +2,12 @@ package com.c9Pay.userservice.web.mvc.controller;
 
 import com.c9Pay.userservice.data.dto.credit.AccountDetails;
 import com.c9Pay.userservice.data.entity.User;
+import com.c9Pay.userservice.security.jwt.JwtParser;
 import com.c9Pay.userservice.web.client.CreditClient;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.data.dto.credit.ChargeForm;
 import com.c9Pay.userservice.web.exception.exceptions.IllegalTokenDetailException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +39,8 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 public class CreditController {
     private final CreditClient creditClient;
 
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtParser jwtParser;
 
-    private final UserService userService;
 
     /**
      * 사용자 크레딧을 충전한다.
@@ -54,19 +52,9 @@ public class CreditController {
     @PostMapping
     public ResponseEntity<?> chargeCredit(@Valid @RequestBody ChargeForm charge,
                                           @CookieValue(AUTHORIZATION_HEADER) String token){
-        log.info("Before call credit service");
-        String ID = parseToken(token);
-        log.info("id {}", ID);
-        String serialNumber = userService
-                .findById(Long.valueOf(ID))
-                .getSerialNumber().toString();
-
-        log.info("serial number: {}", serialNumber);
-        log.info("quantity: {}", charge.getQuantity());
-
-        creditClient.loadCredit(serialNumber, new ChargeForm(charge.getQuantity()));
-
-        log.info("After call credit service, serialNumber: {}", serialNumber);
+        String serialNumber = jwtParser.getSerialNumberByToken(token);
+        creditClient.loadCredit(serialNumber,
+                new ChargeForm(charge.getQuantity()));
         return ResponseEntity.ok().build();
     }
 
@@ -78,26 +66,10 @@ public class CreditController {
      */
     @GetMapping
     public  ResponseEntity<?> getCredit(@CookieValue(AUTHORIZATION_HEADER) String token){
-        Long id = Long.valueOf(parseToken(token));
-        User findUser = userService.findById(id);
-        ResponseEntity<AccountDetails> account = creditClient.getAccount(findUser.getSerialNumber().toString());
-        ChargeForm form = new ChargeForm(Objects.requireNonNull(account.getBody()).getCredit());
+        AccountDetails account = creditClient.getAccount(jwtParser.getSerialNumberByToken(token))
+                .getBody();
+        ChargeForm form = new ChargeForm(Objects.requireNonNull(account).getCredit());
         return ResponseEntity.ok(form);
-    }
-
-    /**
-     * 주어진 인증 토큰에서 사용자 ID를 추출한다.
-     *
-     * @param token 인증 토큰 문자열
-     * @return 추출된 사용자 ID
-     * @throws IllegalTokenDetailException 토큰이 유효하지 않거나 형식에 맞지 않을 경우 발생하는 예외
-     */
-    private String parseToken(String token) {
-        if(token.length() >= 7){
-            String parsedToken = token.substring(7);
-            return jwtTokenUtil.extractId(parsedToken);
-        }
-        throw new IllegalTokenDetailException();
     }
 
 }

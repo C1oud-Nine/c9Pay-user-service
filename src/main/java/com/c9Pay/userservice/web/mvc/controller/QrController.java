@@ -3,6 +3,7 @@ package com.c9Pay.userservice.web.mvc.controller;
 
 import com.c9Pay.userservice.data.dto.auth.ExchangeToken;
 import com.c9Pay.userservice.data.entity.User;
+import com.c9Pay.userservice.security.jwt.JwtParser;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.web.client.AuthClient;
 import com.c9Pay.userservice.web.mvc.service.UserService;
@@ -32,21 +33,18 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 public class QrController {
 
     private final AuthClient authClient;
-    private final JwtTokenUtil jwtTokenUtil;
-    private final UserService userService;
+
+    private final JwtParser jwtParser;
 
     /**
      * 인증 토큰을 사용하여 QR 코드를 생성한다.
      *
      * @param token 사용자의 인증 토큰이 포함된 쿠키 값
-     * @param request HTTP 요청 객체
      * @return QR 코드 생성 요청 결과를 포함하는 ResponseEntity 반환
      */
     @GetMapping("/api/qr")
-    public ResponseEntity<?> createQr(@CookieValue(AUTHORIZATION_HEADER) String token,
-                                      HttpServletRequest request){
-        String id = jwtTokenUtil.extractId(token.substring(7));
-        User findUser = userService.findById(Long.valueOf(id));
-        return authClient.createQR(findUser.getSerialNumber().toString());
+    public ResponseEntity<?> createQr(@CookieValue(AUTHORIZATION_HEADER) String token){
+        String serialNumber = jwtParser.getSerialNumberByToken(token);
+        return authClient.createQR(serialNumber);
     }
 }

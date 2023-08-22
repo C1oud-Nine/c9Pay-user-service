@@ -43,9 +43,6 @@ public class AuthenticationProviderService implements AuthenticationProvider {
         String password= authentication.getCredentials().toString();
         User user = userRepository.findById(Long.valueOf(id))
                 .orElseThrow(UserNotFoundException::new);
-        log.debug("raw encoded {}", passwordEncoder.encode(password));
-        log.debug("raw password: {}, encoded password {}", password, user.getPassword());
-        log.debug("is matched? : {}", passwordEncoder.matches(password,user.getPassword()));
         return checkPassword(user, password, passwordEncoder);
     }
 
