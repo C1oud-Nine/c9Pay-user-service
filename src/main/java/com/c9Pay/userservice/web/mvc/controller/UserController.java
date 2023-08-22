@@ -58,16 +58,12 @@ public class UserController {
      */
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody @Valid UserDto form){
-        log.info("Starting registrati" +
-                "on for a new user account");
         SerialNumberResponse serialNumberResponse = authClient.getSerialNumber().getBody();
         if(serialNumberResponse == null) throw new TokenGenerationFailureException();
         String serialNumber = serialNumberResponse.getSerialNumber().toString();
-        log.info("Entity identification number generation:{}", serialNumber);
         creditClient.createAccount(serialNumber);
         User joinUser = form.toEntity(serialNumberResponse.getSerialNumber());
         userService.signUp(joinUser);
-        log.info("Registration success");
         return ResponseEntity.ok(serialNumber);
     }
 
@@ -124,7 +120,6 @@ public class UserController {
                                             @Valid@RequestBody UserUpdateParam param,
                                             HttpServletResponse response){
         String ID = parseToken(token);
-        log.info("ID: {}", ID);
         Long targetId = Long.valueOf(ID);
         String password = param.getPassword();
         userService.updateUserById(targetId, param);
@@ -149,12 +144,10 @@ public class UserController {
     /**
      * 사용자 아이디 중복 여부를 확인한다
      *
-     * @param request HTTP 요청 객체
      * @return 사용자 아이디가 중복되지 않으면 OK응답, 중복될 경우 Bad Request 응답을 반환한다.
      */
     @GetMapping("/check-duplicate/{userId}")
     public ResponseEntity<?> checkDuplicated(@PathVariable("userId")String userId){
-
         return userService.validateDuplicateUserId(userId)?
         ResponseEntity.ok().build(): ResponseEntity.badRequest().build();
     }

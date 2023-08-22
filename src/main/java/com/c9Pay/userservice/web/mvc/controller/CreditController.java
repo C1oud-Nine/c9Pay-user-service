@@ -54,19 +54,11 @@ public class CreditController {
     @PostMapping
     public ResponseEntity<?> chargeCredit(@Valid @RequestBody ChargeForm charge,
                                           @CookieValue(AUTHORIZATION_HEADER) String token){
-        log.info("Before call credit service");
         String ID = parseToken(token);
-        log.info("id {}", ID);
         String serialNumber = userService
                 .findById(Long.valueOf(ID))
                 .getSerialNumber().toString();
-
-        log.info("serial number: {}", serialNumber);
-        log.info("quantity: {}", charge.getQuantity());
-
         creditClient.loadCredit(serialNumber, new ChargeForm(charge.getQuantity()));
-
-        log.info("After call credit service, serialNumber: {}", serialNumber);
         return ResponseEntity.ok().build();
     }
 

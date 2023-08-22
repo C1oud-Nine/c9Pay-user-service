@@ -13,7 +13,6 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExceptionResponse {
-
     private String errorCode;
 
 }

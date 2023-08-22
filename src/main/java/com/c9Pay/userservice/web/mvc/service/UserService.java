@@ -54,7 +54,6 @@ public class UserService {
      */
     public String authenticate(String userId, String password){
         User findUser = userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
-        log.info("find user id : {}", Objects.requireNonNull(findUser).getId());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         findUser.getId().toString(),
