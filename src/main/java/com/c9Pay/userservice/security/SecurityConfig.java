@@ -55,7 +55,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
                 .authorizeHttpRequests(auth ->  auth
-                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/user/signup")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/login")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/user/check-duplicate/*")).permitAll()
