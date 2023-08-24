@@ -6,6 +6,7 @@ import com.c9Pay.userservice.data.entity.User;
 import com.c9Pay.userservice.security.jwt.JwtParser;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.web.client.AuthClient;
+import com.c9Pay.userservice.web.docs.QrControllerDocs;
 import com.c9Pay.userservice.web.mvc.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class QrController {
+public class QrController implements QrControllerDocs {
 
     private final AuthClient authClient;
 
@@ -43,6 +44,7 @@ public class QrController {
      * @return QR 코드 생성 요청 결과를 포함하는 ResponseEntity 반환
      */
     @GetMapping("/api/qr")
+    @Override
     public ResponseEntity<?> createQr(@CookieValue(AUTHORIZATION_HEADER) String token){
         String serialNumber = jwtParser.getSerialNumberByToken(token);
         return authClient.createQR(serialNumber);

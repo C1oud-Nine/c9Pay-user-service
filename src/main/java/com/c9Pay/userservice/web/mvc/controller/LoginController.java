@@ -5,6 +5,7 @@ import com.c9Pay.userservice.constant.BearerConstant;
 import com.c9Pay.userservice.constant.CookieConstant;
 import com.c9Pay.userservice.data.dto.user.LoginForm;
 import com.c9Pay.userservice.data.dto.user.TokenResponse;
+import com.c9Pay.userservice.web.docs.LoginControllerDocs;
 import com.c9Pay.userservice.web.mvc.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +35,7 @@ import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-public class LoginController {
+public class LoginController implements LoginControllerDocs {
     private final UserService userService;
 
 
@@ -45,6 +46,7 @@ public class LoginController {
      * @param response HTTP 응답 객체
      * @return 로그인 성공 시 성공 메세지를 담은 ResponseEntity 반환
      */
+    @Override
     @PostMapping("/api/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginForm form, HttpServletResponse response){
         String token = userService.authenticate(form.getUserId(), form.getPassword());
