@@ -1,6 +1,7 @@
 package com.c9Pay.userservice.data.dto.user;
 
 import com.c9Pay.userservice.data.entity.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -16,19 +17,24 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @Builder
+@Schema(description = "사용자 DTO")
 public class UserDto {
 
+    @Schema(description = "회원이름", example = "홍길동")
     @NotBlank
     private String username;
 
     @NotBlank
+    @Schema(description = "회원 아이디", example = "userId")
     private String userId;
 
     @NotBlank
+    @Schema(description = "회원 비밀번호", example = "q1w2e3r4")
     private String password;
 
     @NotBlank
     @Email
+    @Schema(description = "회원 이메일", example = "exam@example.com")
     private String email;
 
     /**

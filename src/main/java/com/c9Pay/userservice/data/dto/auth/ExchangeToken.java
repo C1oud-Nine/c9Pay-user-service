@@ -1,5 +1,6 @@
 package com.c9Pay.userservice.data.dto.auth;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,13 @@ import lombok.NoArgsConstructor;
  *
  * @see com.c9Pay.userservice.web.client.AuthClient
  */
+@Schema(description = "QR 생성을 위한 토큰 정보")
 @Data@AllArgsConstructor@NoArgsConstructor
 public class ExchangeToken {
+    @Schema(description = "내용")
     private String content;
+    @Schema(description = "만료 시간")
     private Long expiredAt;
+    @Schema(description = "서명")
     private String sign;
 }
