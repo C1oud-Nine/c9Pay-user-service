@@ -8,6 +8,7 @@ import com.c9Pay.userservice.web.client.CreditClient;
 import com.c9Pay.userservice.data.entity.User;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.data.dto.auth.SerialNumberResponse;
+import com.c9Pay.userservice.web.docs.UserControllerDocs;
 import com.c9Pay.userservice.web.exception.exceptions.IllegalTokenDetailException;
 import com.c9Pay.userservice.data.dto.user.UserDto;
 import com.c9Pay.userservice.data.dto.user.UserUpdateParam;
@@ -47,7 +48,7 @@ import static com.c9Pay.userservice.data.dto.user.UserResponse.mapping;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
-public class UserController {
+public class UserController implements UserControllerDocs {
     private final CreditClient creditClient;
     private final AuthClient authClient;
     private final JwtParser jwtParser;
@@ -60,6 +61,7 @@ public class UserController {
      * @return 회원가입이 성공한 경우 사용자의 객체식별번호를 포함하는 ResponseEntity 반환
      * @throws TokenGenerationFailureException auth-service에서 개체식별번호를 받아 오지 못할 경우 발생하는 예외
      */
+    @Override
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody @Valid UserDto form){
         SerialNumberResponse serialNumberResponse = authClient.getSerialNumber().getBody();
@@ -77,6 +79,7 @@ public class UserController {
      * @param token 사용자의 인증 토큰이 포함된 쿠키 값
      * @return 특정 사용자의 상세 정보를 포함하는 ResponseEntity 반환
      */
+    @Override
     @GetMapping
     public ResponseEntity<?> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
         String serialNumber = jwtParser.getSerialNumberByToken(token);
@@ -96,6 +99,7 @@ public class UserController {
      * @param response HTTP 응답 객체
      * @return 계정 삭제 요청의 성공 여부를 담은 ResponseEntity 반환
      */
+    @Override
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token, HttpServletResponse response){
         String serialNumber = jwtParser.getSerialNumberByToken(token);
@@ -115,6 +119,7 @@ public class UserController {
      * @param response HTTP 응답 객체
      * @return 업데이트된 사용자 정보를 담은 ResponseEntity 반환
      */
+    @Override
     @PutMapping
     public ResponseEntity<?> updateUserInfo(@CookieValue(AUTHORIZATION_HEADER) String token,
                                             @Valid@RequestBody UserUpdateParam param,
@@ -133,6 +138,7 @@ public class UserController {
      * @param token 사용자의 인증 토큰이 포함된 쿠키 값
      * @return 현재 로그인한 사용자의 개체식별번호를 포함하는 ResponseEntity 반환
      */
+    @Override
     @GetMapping("/serial-number")
     public ResponseEntity<?> getSerialNumber(@CookieValue(AUTHORIZATION_HEADER) String token){
         String serialNumber = jwtParser.getSerialNumberByToken(token);
@@ -144,6 +150,7 @@ public class UserController {
      *
      * @return 사용자 아이디가 중복되지 않으면 OK응답, 중복될 경우 Bad Request 응답을 반환한다.
      */
+    @Override
     @GetMapping("/check-duplicate/{userId}")
     public ResponseEntity<?> checkDuplicated(@PathVariable("userId")String userId){
         return userService.validateDuplicateUserId(userId)?

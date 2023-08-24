@@ -1,5 +1,6 @@
 package com.c9Pay.userservice.data.dto.credit;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,9 +17,11 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "크레딧 충전 폼")
 public class ChargeForm {
 
     @Min(value = 0)
+    @Schema(description = "크레딧 충전 액수", example = "15000")
     private Long quantity;
 
 }

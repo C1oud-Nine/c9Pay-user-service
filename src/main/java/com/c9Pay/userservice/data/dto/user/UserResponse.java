@@ -1,6 +1,7 @@
 package com.c9Pay.userservice.data.dto.user;
 
 import com.c9Pay.userservice.data.entity.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,16 +15,21 @@ import lombok.Data;
  * @see com.c9Pay.userservice.data.entity.User
  */
 @Data
+@Schema(description = "사용자 정보 응답 형식")
 @Builder
 public class UserResponse {
     @NotBlank
+    @Schema(description = "회원 이름", example = "홍길동")
     private String username;
     @NotBlank
+    @Schema(description = "회원 아이디", example = "UserId")
     private String userId;
     @NotBlank
     @Email
+    @Schema(description = "회원 이메일", example = "email@example.com")
     private String email;
     @Min(0)
+    @Schema(description = "충전된 크레딧 양", example = "15000")
     private Long credit;
 
     /**

@@ -48,3 +48,13 @@ management:
   zipkin:
     tracing:
       endpoint: "http://localhost:9411/api/v2/spans"
+
+springdoc:
+  packages-to-scan: com.c9Pay.userservice.web.mvc.controller
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /user-service/api/docs
+    display-request-duration: true
+    disable-swagger-default-url: true
+    operations-sorter: alpha
