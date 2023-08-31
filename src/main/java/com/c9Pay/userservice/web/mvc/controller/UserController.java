@@ -1,5 +1,6 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
+import com.c9Pay.userservice.constant.ServiceConstant;
 import com.c9Pay.userservice.data.dto.credit.AccountDetails;
 import com.c9Pay.userservice.data.dto.user.UserResponse;
 import com.c9Pay.userservice.security.jwt.JwtParser;
@@ -27,8 +28,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.c9Pay.userservice.config.Resilience4JConfig.circuitBreakerThrowable;
 import static com.c9Pay.userservice.constant.BearerConstant.BEARER_PREFIX;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
+import static com.c9Pay.userservice.constant.ServiceConstant.CREDIT_SERVICE;
 import static com.c9Pay.userservice.data.dto.user.UserResponse.mapping;
 
 /**
@@ -68,15 +71,18 @@ public class UserController implements UserControllerDocs {
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody @Valid UserDto form){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
-        UUID serialNumber = Objects.requireNonNull(circuitbreaker.run(authClient::getSerialNumber, throwable -> {
+        UUID serialNumber =
+                Objects.requireNonNull(circuitbreaker.run(authClient::getSerialNumber, throwable -> {
             log.error("Auth service is unavailable");
             throw new InternalServerException();
         }).getBody()).getSerialNumber();
-        HttpStatusCode isCreated = circuitbreaker.run(() -> creditClient.createAccount(serialNumber.toString()), throwable -> {
-            log.error("Auth service is unavailable");
-            throw new InternalServerException();
-        }).getStatusCode();
+
+        HttpStatusCode isCreated =
+                circuitbreaker.run(() -> creditClient.createAccount(serialNumber.toString()),
+                throwable -> circuitBreakerThrowable(CREDIT_SERVICE)).getStatusCode();
+
         if (isCreated.is4xxClientError()) throw new AccountAlreadyExist();
+
         User joinUser = form.toEntity(serialNumber);
         userService.signUp(joinUser);
         return ResponseEntity.ok(serialNumber);
@@ -93,10 +99,9 @@ public class UserController implements UserControllerDocs {
     public ResponseEntity<?> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
         String serialNumber = jwtParser.getSerialNumberByToken(token);
-        AccountDetails account = circuitbreaker.run(() -> creditClient.getAccount(serialNumber), throwable -> {
-            log.error("Credit service is unavailable");
-            throw new InternalServerException();
-        }).getBody();
+
+        AccountDetails account = circuitbreaker.run(() -> creditClient.getAccount(serialNumber),
+                throwable -> circuitBreakerThrowable(CREDIT_SERVICE)).getBody();
 
         User findUser = jwtParser.getUserByToken(token);
         UserResponse response = mapping(findUser,
@@ -121,10 +126,8 @@ public class UserController implements UserControllerDocs {
 
         response.addCookie(new Cookie(AUTHORIZATION_HEADER, null));
         userService.deleteUserById(id);
-        circuitbreaker.run(() -> creditClient.deleteAccount(serialNumber), throwable -> {
-            log.error("Credit service is unavailable");
-            throw new InternalServerException();
-        });
+        circuitbreaker.run(() -> creditClient.deleteAccount(serialNumber),
+                throwable -> circuitBreakerThrowable(CREDIT_SERVICE));
         return ResponseEntity.ok().build();
     }
 

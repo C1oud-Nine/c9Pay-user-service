@@ -1,6 +1,7 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
 
+import com.c9Pay.userservice.config.Resilience4JConfig;
 import com.c9Pay.userservice.data.dto.auth.ExchangeToken;
 import com.c9Pay.userservice.data.entity.User;
 import com.c9Pay.userservice.security.jwt.JwtParser;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.c9Pay.userservice.config.Resilience4JConfig.circuitBreakerThrowable;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
+import static com.c9Pay.userservice.constant.ServiceConstant.AUTH_SERVICE;
 
 /**
  * QR 정보 처리 관리하는 컨트롤러
@@ -54,9 +57,7 @@ public class QrController implements QrControllerDocs {
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
         String serialNumber = jwtParser.getSerialNumberByToken(token);
 
-        return circuitbreaker.run(() -> authClient.createQR(serialNumber), throwable -> {
-            log.error("Auth service is unavailable");
-            throw new InternalServerException();
-        });
+        return circuitbreaker.run(() -> authClient.createQR(serialNumber),
+                throwable -> circuitBreakerThrowable(AUTH_SERVICE));
     }
 }

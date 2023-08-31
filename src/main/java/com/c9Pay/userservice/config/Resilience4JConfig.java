@@ -1,8 +1,10 @@
 package com.c9Pay.userservice.config;
 
+import com.c9Pay.userservice.web.exception.exceptions.InternalServerException;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.util.Timeout;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
@@ -16,6 +18,7 @@ import java.util.concurrent.TimeoutException;
 
 import static io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowType.COUNT_BASED;
 
+@Slf4j
 @Configuration
 public class Resilience4JConfig {
     @Bean
@@ -35,5 +38,9 @@ public class Resilience4JConfig {
                 .timeLimiterConfig(timeLimiterConfig)
                 .circuitBreakerConfig(config)
                 .build());
+    }
+    public static <T> T circuitBreakerThrowable(String service){
+        log.error("{} is Unavailable",service);
+        throw new InternalServerException();
     }
 }

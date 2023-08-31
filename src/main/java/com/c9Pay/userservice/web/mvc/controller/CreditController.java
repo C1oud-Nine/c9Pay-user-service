@@ -1,5 +1,6 @@
 package com.c9Pay.userservice.web.mvc.controller;
 
+import com.c9Pay.userservice.config.Resilience4JConfig;
 import com.c9Pay.userservice.data.dto.credit.AccountDetails;
 import com.c9Pay.userservice.data.entity.User;
 import com.c9Pay.userservice.security.jwt.JwtParser;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
+import static com.c9Pay.userservice.config.Resilience4JConfig.circuitBreakerThrowable;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
+import static com.c9Pay.userservice.constant.ServiceConstant.CREDIT_SERVICE;
 
 
 /**
@@ -81,10 +84,7 @@ public class CreditController implements CreditControllerDocs {
     public  ResponseEntity<?> getCredit(@CookieValue(AUTHORIZATION_HEADER) String token){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
         AccountDetails account = circuitbreaker.run(() -> creditClient.getAccount(jwtParser.getSerialNumberByToken(token)),
-                throwable -> {
-                    log.error("Credit service is unavailable");
-                    throw new InternalServerException();
-                }).getBody();
+                throwable -> circuitBreakerThrowable(CREDIT_SERVICE)).getBody();
 
         ChargeForm form = new ChargeForm(Objects.requireNonNull(account).getCredit());
         return ResponseEntity.ok(form);
