@@ -31,6 +31,7 @@ import java.util.UUID;
 import static com.c9Pay.userservice.config.Resilience4JConfig.circuitBreakerThrowable;
 import static com.c9Pay.userservice.constant.BearerConstant.BEARER_PREFIX;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
+import static com.c9Pay.userservice.constant.ServiceConstant.AUTH_SERVICE;
 import static com.c9Pay.userservice.constant.ServiceConstant.CREDIT_SERVICE;
 import static com.c9Pay.userservice.data.dto.user.UserResponse.mapping;
 
@@ -72,10 +73,8 @@ public class UserController implements UserControllerDocs {
     public ResponseEntity<?> signUp(@RequestBody @Valid UserDto form){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
         UUID serialNumber =
-                Objects.requireNonNull(circuitbreaker.run(authClient::getSerialNumber, throwable -> {
-            log.error("Auth service is unavailable");
-            throw new InternalServerException();
-        }).getBody()).getSerialNumber();
+                Objects.requireNonNull(circuitbreaker.run(authClient::getSerialNumber,
+                        throwable -> circuitBreakerThrowable(AUTH_SERVICE)).getBody()).getSerialNumber();
 
         HttpStatusCode isCreated =
                 circuitbreaker.run(() -> creditClient.createAccount(serialNumber.toString()),
