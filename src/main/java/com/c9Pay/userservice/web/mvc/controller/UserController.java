@@ -6,24 +6,26 @@ import com.c9Pay.userservice.security.jwt.JwtParser;
 import com.c9Pay.userservice.web.client.AuthClient;
 import com.c9Pay.userservice.web.client.CreditClient;
 import com.c9Pay.userservice.data.entity.User;
-import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
-import com.c9Pay.userservice.data.dto.auth.SerialNumberResponse;
 import com.c9Pay.userservice.web.docs.UserControllerDocs;
-import com.c9Pay.userservice.web.exception.exceptions.IllegalTokenDetailException;
 import com.c9Pay.userservice.data.dto.user.UserDto;
 import com.c9Pay.userservice.data.dto.user.UserUpdateParam;
+import com.c9Pay.userservice.web.exception.exceptions.AccountAlreadyExist;
+import com.c9Pay.userservice.web.exception.exceptions.InternalServerException;
 import com.c9Pay.userservice.web.exception.exceptions.TokenGenerationFailureException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.c9Pay.userservice.constant.BearerConstant.BEARER_PREFIX;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
@@ -52,6 +54,7 @@ public class UserController implements UserControllerDocs {
     private final CreditClient creditClient;
     private final AuthClient authClient;
     private final JwtParser jwtParser;
+    private final CircuitBreakerFactory circuitBreakerFactory;
 
     private final UserService userService;
     /**
@@ -64,11 +67,17 @@ public class UserController implements UserControllerDocs {
     @Override
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody @Valid UserDto form){
-        SerialNumberResponse serialNumberResponse = authClient.getSerialNumber().getBody();
-        if(serialNumberResponse == null) throw new TokenGenerationFailureException();
-        String serialNumber = serialNumberResponse.getSerialNumber().toString();
-        creditClient.createAccount(serialNumber);
-        User joinUser = form.toEntity(serialNumberResponse.getSerialNumber());
+        CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
+        UUID serialNumber = Objects.requireNonNull(circuitbreaker.run(authClient::getSerialNumber, throwable -> {
+            log.error("Auth service is unavailable");
+            throw new InternalServerException();
+        }).getBody()).getSerialNumber();
+        HttpStatusCode isCreated = circuitbreaker.run(() -> creditClient.createAccount(serialNumber.toString()), throwable -> {
+            log.error("Auth service is unavailable");
+            throw new InternalServerException();
+        }).getStatusCode();
+        if (isCreated.is4xxClientError()) throw new AccountAlreadyExist();
+        User joinUser = form.toEntity(serialNumber);
         userService.signUp(joinUser);
         return ResponseEntity.ok(serialNumber);
     }
@@ -82,10 +91,14 @@ public class UserController implements UserControllerDocs {
     @Override
     @GetMapping
     public ResponseEntity<?> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
+        CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
         String serialNumber = jwtParser.getSerialNumberByToken(token);
-        AccountDetails account = creditClient.getAccount(serialNumber).getBody();
-        User findUser = jwtParser.getUserByToken(token);
+        AccountDetails account = circuitbreaker.run(() -> creditClient.getAccount(serialNumber), throwable -> {
+            log.error("Credit service is unavailable");
+            throw new InternalServerException();
+        }).getBody();
 
+        User findUser = jwtParser.getUserByToken(token);
         UserResponse response = mapping(findUser,
                 Objects.requireNonNull(account).getCredit());
 
@@ -102,12 +115,16 @@ public class UserController implements UserControllerDocs {
     @Override
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token, HttpServletResponse response){
+        CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
         String serialNumber = jwtParser.getSerialNumberByToken(token);
         Long id = jwtParser.getIdByToken(token);
 
         response.addCookie(new Cookie(AUTHORIZATION_HEADER, null));
         userService.deleteUserById(id);
-        creditClient.deleteAccount(serialNumber);
+        circuitbreaker.run(() -> creditClient.deleteAccount(serialNumber), throwable -> {
+            log.error("Credit service is unavailable");
+            throw new InternalServerException();
+        });
         return ResponseEntity.ok().build();
     }
 

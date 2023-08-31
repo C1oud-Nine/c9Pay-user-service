@@ -7,10 +7,13 @@ import com.c9Pay.userservice.security.jwt.JwtParser;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.web.client.AuthClient;
 import com.c9Pay.userservice.web.docs.QrControllerDocs;
+import com.c9Pay.userservice.web.exception.exceptions.InternalServerException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +40,8 @@ public class QrController implements QrControllerDocs {
 
     private final JwtParser jwtParser;
 
+    private final CircuitBreakerFactory circuitBreakerFactory;
+
     /**
      * 인증 토큰을 사용하여 QR 코드를 생성한다.
      *
@@ -46,7 +51,12 @@ public class QrController implements QrControllerDocs {
     @GetMapping("/api/qr")
     @Override
     public ResponseEntity<?> createQr(@CookieValue(AUTHORIZATION_HEADER) String token){
+        CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
         String serialNumber = jwtParser.getSerialNumberByToken(token);
-        return authClient.createQR(serialNumber);
+
+        return circuitbreaker.run(() -> authClient.createQR(serialNumber), throwable -> {
+            log.error("Auth service is unavailable");
+            throw new InternalServerException();
+        });
     }
 }
