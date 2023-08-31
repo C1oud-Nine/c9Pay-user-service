@@ -66,10 +66,7 @@ public class CreditController implements CreditControllerDocs {
         String serialNumber = jwtParser.getSerialNumberByToken(token);
 
         circuitbreaker.run(() -> creditClient.loadCredit(serialNumber, new ChargeForm(charge.getQuantity())),
-                throwable -> {
-            log.error("Credit service is unavailable");
-            throw new InternalServerException();
-        });
+                throwable -> circuitBreakerThrowable(CREDIT_SERVICE));
         return ResponseEntity.ok().build();
     }
 
