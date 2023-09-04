@@ -51,6 +51,7 @@ public class LoginController implements LoginControllerDocs {
     public ResponseEntity<?> login(@Valid @RequestBody LoginForm form, HttpServletResponse response){
         String token = userService.authenticate(form.getUserId(), form.getPassword());
         Cookie cookie = new Cookie(AUTHORIZATION_HEADER, BEARER_PREFIX + token);
+        log.debug("Token Value : {} ", cookie.getValue());
         TokenResponse tokenBody = new TokenResponse(BEARER_PREFIX + token);
         cookie.setPath("/");
         response.addCookie(cookie);

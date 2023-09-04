@@ -24,14 +24,14 @@ public class Resilience4JConfig {
     @Bean
     public Customizer<Resilience4JCircuitBreakerFactory> globalCustomConfiguration(){
         CircuitBreakerConfig config = CircuitBreakerConfig.custom()
-                .failureRateThreshold(50) // CircuitBreaker 열리는 실패 임계값
+                .failureRateThreshold(10) // CircuitBreaker 열리는 실패 임계값
                 .waitDurationInOpenState(Duration.ofMillis(1000)) //1분안 동안 작동후 다시 닫힘
                 .slidingWindowSize(2) //최근 호출 window 크기
                 .recordExceptions(IOException.class, TimeoutException.class) // 기록할 exception
                 .build();
 
         TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
-                .timeoutDuration(Duration.ofSeconds(10)) // 작업 최대 시간은 4초
+                .timeoutDuration(Duration.ofSeconds(4)) // 작업 최대 시간은 4초
                 .build();
 
         return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
