@@ -41,7 +41,13 @@ public class SecurityConfig {
      */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
+        return (web) ->
+                web.ignoring().requestMatchers(
+                        new AntPathRequestMatcher("/h2-console/**"),
+                        new AntPathRequestMatcher("/favicon.ico"),
+                        new AntPathRequestMatcher( "/swagger-ui/**"),
+                        new AntPathRequestMatcher("/swagger-resources/**"),
+                        new AntPathRequestMatcher("/v3/api-docs/**"));
     }
 
     /**
@@ -59,6 +65,11 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/login")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/user-service/api/user/check-duplicate/*")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/user-service/api/docs")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/user-service/api/swagger-ui/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/user-service/v3/api-docs/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/webjars/swagger-ui/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/**")).hasAuthority("USER")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)

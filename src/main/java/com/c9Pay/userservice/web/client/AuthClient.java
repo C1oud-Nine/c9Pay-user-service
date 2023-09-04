@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 인증 서비스와 통신하기 위한 Feign 클라이언트 인터페이스
  */
-@FeignClient(name="auth-service", url="${AUTH_SERVICE_URI:http://localhost}:8081")
+@FeignClient(name="auth-service")
 public interface AuthClient {
 
     /**
