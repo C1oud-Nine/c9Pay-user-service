@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 크레딧 서비스와 통신하기 위한 Feign 클라이언트 인터페이스
  */
-@FeignClient(name = "credit-service", url = "${CREDIT_SERVICE_URI:http://localhost}:8082")
+@FeignClient(name = "credit-service")
 public interface CreditClient {
 
     /**
