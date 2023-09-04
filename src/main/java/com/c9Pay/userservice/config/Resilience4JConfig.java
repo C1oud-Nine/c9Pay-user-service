@@ -24,8 +24,8 @@ public class Resilience4JConfig {
     @Bean
     public Customizer<Resilience4JCircuitBreakerFactory> globalCustomConfiguration(){
         CircuitBreakerConfig config = CircuitBreakerConfig.custom()
-                .failureRateThreshold(3) // CircuitBreaker 열리는 실패 임계값
-                .waitDurationInOpenState(Duration.ofMinutes(1)) //1분안 동안 작동후 다시 닫힘
+                .failureRateThreshold(10) // CircuitBreaker 열리는 실패 임계값
+                .waitDurationInOpenState(Duration.ofMillis(1000)) //1분안 동안 작동후 다시 닫힘
                 .slidingWindowSize(2) //최근 호출 window 크기
                 .recordExceptions(IOException.class, TimeoutException.class) // 기록할 exception
                 .build();

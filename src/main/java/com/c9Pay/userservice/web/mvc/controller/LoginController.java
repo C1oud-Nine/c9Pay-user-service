@@ -50,10 +50,7 @@ public class LoginController implements LoginControllerDocs {
     @PostMapping("/api/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginForm form, HttpServletResponse response){
         String token = userService.authenticate(form.getUserId(), form.getPassword());
-        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, BEARER_PREFIX + token);
         TokenResponse tokenBody = new TokenResponse(BEARER_PREFIX + token);
-        cookie.setPath("/");
-        response.addCookie(cookie);
         return ResponseEntity.ok().body(tokenBody);
     }
 
