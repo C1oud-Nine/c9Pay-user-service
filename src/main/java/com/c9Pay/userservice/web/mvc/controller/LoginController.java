@@ -5,6 +5,7 @@ import com.c9Pay.userservice.constant.BearerConstant;
 import com.c9Pay.userservice.constant.CookieConstant;
 import com.c9Pay.userservice.data.dto.user.LoginForm;
 import com.c9Pay.userservice.data.dto.user.TokenResponse;
+import com.c9Pay.userservice.interceptor.GatewayValidation;
 import com.c9Pay.userservice.web.docs.LoginControllerDocs;
 import com.c9Pay.userservice.web.mvc.service.UserService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -21,6 +22,8 @@ import java.io.IOException;
 
 import static com.c9Pay.userservice.constant.BearerConstant.BEARER_PREFIX;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
+import static com.c9Pay.userservice.constant.ServiceConstant.API;
+
 /**
  * 사용자 로그인을 처리하는 컨트롤러.
  *
@@ -49,6 +52,7 @@ public class LoginController implements LoginControllerDocs {
      */
     @Override
     @RateLimiter(name = "Rate_limiter")
+    @GatewayValidation(API)
     @PostMapping("/api/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginForm form, HttpServletResponse response){
         String token = userService.authenticate(form.getUserId(), form.getPassword());

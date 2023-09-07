@@ -3,6 +3,7 @@ package com.c9Pay.userservice.web.mvc.controller;
 import com.c9Pay.userservice.config.Resilience4JConfig;
 import com.c9Pay.userservice.data.dto.credit.AccountDetails;
 import com.c9Pay.userservice.data.entity.User;
+import com.c9Pay.userservice.interceptor.GatewayValidation;
 import com.c9Pay.userservice.security.jwt.JwtParser;
 import com.c9Pay.userservice.web.client.CreditClient;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
@@ -24,6 +25,7 @@ import java.util.Objects;
 
 import static com.c9Pay.userservice.config.Resilience4JConfig.circuitBreakerThrowable;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
+import static com.c9Pay.userservice.constant.ServiceConstant.API;
 import static com.c9Pay.userservice.constant.ServiceConstant.CREDIT_SERVICE;
 
 
@@ -61,6 +63,7 @@ public class CreditController implements CreditControllerDocs {
      */
     @Override
     @RateLimiter(name = "Rate_limiter")
+    @GatewayValidation(API)
     @PostMapping
     public ResponseEntity<?> chargeCredit(@Valid @RequestBody ChargeForm charge,
                                           @CookieValue(AUTHORIZATION_HEADER) String token){
@@ -80,6 +83,7 @@ public class CreditController implements CreditControllerDocs {
      */
     @Override
     @RateLimiter(name = "Rate_limiter")
+    @GatewayValidation(API)
     @GetMapping
     public  ResponseEntity<?> getCredit(@CookieValue(AUTHORIZATION_HEADER) String token){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");

@@ -4,6 +4,7 @@ package com.c9Pay.userservice.web.mvc.controller;
 import com.c9Pay.userservice.config.Resilience4JConfig;
 import com.c9Pay.userservice.data.dto.auth.ExchangeToken;
 import com.c9Pay.userservice.data.entity.User;
+import com.c9Pay.userservice.interceptor.GatewayValidation;
 import com.c9Pay.userservice.security.jwt.JwtParser;
 import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.web.client.AuthClient;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.c9Pay.userservice.config.Resilience4JConfig.circuitBreakerThrowable;
 import static com.c9Pay.userservice.constant.CookieConstant.AUTHORIZATION_HEADER;
+import static com.c9Pay.userservice.constant.ServiceConstant.API;
 import static com.c9Pay.userservice.constant.ServiceConstant.AUTH_SERVICE;
 
 /**
@@ -53,6 +55,7 @@ public class QrController implements QrControllerDocs {
      * @return QR 코드 생성 요청 결과를 포함하는 ResponseEntity 반환
      */
     @GetMapping("/api/qr")
+    @GatewayValidation(API)
     @RateLimiter(name = "Rate_limiter")
     @Override
     public ResponseEntity<?> createQr(@CookieValue(AUTHORIZATION_HEADER) String token){
