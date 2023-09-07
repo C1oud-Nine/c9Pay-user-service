@@ -10,6 +10,7 @@ import com.c9Pay.userservice.web.client.AuthClient;
 import com.c9Pay.userservice.web.docs.QrControllerDocs;
 import com.c9Pay.userservice.web.exception.exceptions.InternalServerException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,7 @@ public class QrController implements QrControllerDocs {
      * @return QR 코드 생성 요청 결과를 포함하는 ResponseEntity 반환
      */
     @GetMapping("/api/qr")
+    @RateLimiter(name = "Rate_limiter")
     @Override
     public ResponseEntity<?> createQr(@CookieValue(AUTHORIZATION_HEADER) String token){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");

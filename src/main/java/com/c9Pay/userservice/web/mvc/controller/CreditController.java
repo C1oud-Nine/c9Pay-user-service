@@ -11,6 +11,7 @@ import com.c9Pay.userservice.web.docs.CreditControllerDocs;
 import com.c9Pay.userservice.web.exception.exceptions.IllegalTokenDetailException;
 import com.c9Pay.userservice.web.exception.exceptions.InternalServerException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +60,7 @@ public class CreditController implements CreditControllerDocs {
      * @return 크레딧 충전이 성공한 경우 OK 응답을 반환
      */
     @Override
+    @RateLimiter(name = "Rate_limiter")
     @PostMapping
     public ResponseEntity<?> chargeCredit(@Valid @RequestBody ChargeForm charge,
                                           @CookieValue(AUTHORIZATION_HEADER) String token){
@@ -77,6 +79,7 @@ public class CreditController implements CreditControllerDocs {
      * @return 사용자의 현재 크레딧 정보를 담은 ResponseEntity 반환
      */
     @Override
+    @RateLimiter(name = "Rate_limiter")
     @GetMapping
     public  ResponseEntity<?> getCredit(@CookieValue(AUTHORIZATION_HEADER) String token){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");

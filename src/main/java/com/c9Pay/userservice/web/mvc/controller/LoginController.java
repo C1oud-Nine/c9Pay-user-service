@@ -7,6 +7,7 @@ import com.c9Pay.userservice.data.dto.user.LoginForm;
 import com.c9Pay.userservice.data.dto.user.TokenResponse;
 import com.c9Pay.userservice.web.docs.LoginControllerDocs;
 import com.c9Pay.userservice.web.mvc.service.UserService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,6 +48,7 @@ public class LoginController implements LoginControllerDocs {
      * @return 로그인 성공 시 성공 메세지를 담은 ResponseEntity 반환
      */
     @Override
+    @RateLimiter(name = "Rate_limiter")
     @PostMapping("/api/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginForm form, HttpServletResponse response){
         String token = userService.authenticate(form.getUserId(), form.getPassword());
