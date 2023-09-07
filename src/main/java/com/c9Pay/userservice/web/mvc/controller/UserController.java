@@ -97,8 +97,8 @@ public class UserController implements UserControllerDocs {
     @GetMapping
     public ResponseEntity<?> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
-        String serialNumber = jwtParser.getSerialNumberByToken(token);
         log.debug(token);
+        String serialNumber = jwtParser.getSerialNumberByToken(token);
         AccountDetails account = circuitbreaker.run(() -> creditClient.getAccount(serialNumber),
                 throwable -> circuitBreakerThrowable(CREDIT_SERVICE)).getBody();
 
