@@ -21,7 +21,7 @@ public class GatewayInterceptor implements HandlerInterceptor {
         if(handler instanceof HandlerMethod handlerMethod){
             GatewayValidation gatewayValidation = handlerMethod.getMethodAnnotation(GatewayValidation.class);
             String header = request.getHeader(API);
-            if(gatewayValidation == null) return true;
+            if(gatewayValidation == null || header == null) return true;
             else if(header.equals(key)){
                 String headerName = gatewayValidation.value();
                 String headerValue = request.getHeader(headerName);
