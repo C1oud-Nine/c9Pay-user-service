@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,7 +85,7 @@ public class CreditController implements CreditControllerDocs {
     @Override
     @RateLimiter(name = "Rate_limiter")
     @GatewayValidation(API)
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public  ResponseEntity<?> getCredit(@CookieValue(AUTHORIZATION_HEADER) String token){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
         AccountDetails account = circuitbreaker.run(() -> creditClient.getAccount(jwtParser.getSerialNumberByToken(token)),

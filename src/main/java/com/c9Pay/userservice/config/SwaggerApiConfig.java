@@ -1,21 +1,27 @@
 package com.c9Pay.userservice.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
+@OpenAPIDefinition
 public class SwaggerApiConfig {
     @Bean
-    public OpenAPI openAPI(){
-        Info info = new Info()
-                .version("0.1")
-                .title("사용자 서비스 API")
-                .description("사용자 서비스 API 명세서");
+    public OpenAPI openAPI(
+        @Value("${openapi.service.title}")String serviceTitle,
+        @Value("${openapi.service.version}")String serviceVersion,
+        @Value("${openapi.service.url}")String url){
+
         return new OpenAPI()
-                .components(new Components())
-                .info(info);
+                .servers(List.of(new Server().url(url)))
+                .info(new Info().title(serviceTitle).version(serviceVersion));
     }
 }

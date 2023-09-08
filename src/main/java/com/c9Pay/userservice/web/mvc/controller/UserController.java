@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,7 +74,7 @@ public class UserController implements UserControllerDocs {
     @Override
     @GatewayValidation(API)
     @RateLimiter(name = "Rate_limiter")
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> signUp(@RequestBody @Valid UserDto form){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
         UUID serialNumber =
@@ -100,7 +101,7 @@ public class UserController implements UserControllerDocs {
     @Override
     @RateLimiter(name = "Rate_limiter")
     @GatewayValidation(API)
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
         log.debug(token);
@@ -149,7 +150,7 @@ public class UserController implements UserControllerDocs {
     @Override
     @GatewayValidation(API)
     @RateLimiter(name = "Rate_limiter")
-    @PutMapping
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUserInfo(@CookieValue(AUTHORIZATION_HEADER) String token,
                                             @Valid@RequestBody UserUpdateParam param,
                                             HttpServletResponse response){
@@ -169,7 +170,7 @@ public class UserController implements UserControllerDocs {
      */
     @Override
     @RateLimiter(name = "Rate_limiter")
-    @GetMapping("/serial-number")
+    @GetMapping(value = "/serial-number", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSerialNumber(@CookieValue(AUTHORIZATION_HEADER) String token){
         String serialNumber = jwtParser.getSerialNumberByToken(token);
         return ResponseEntity.ok(serialNumber);

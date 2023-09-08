@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +54,7 @@ public class LoginController implements LoginControllerDocs {
     @Override
     @RateLimiter(name = "Rate_limiter")
     @GatewayValidation(API)
-    @PostMapping("/api/login")
+    @PostMapping(value = "/api/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(@Valid @RequestBody LoginForm form, HttpServletResponse response){
         String token = userService.authenticate(form.getUserId(), form.getPassword());
         TokenResponse tokenBody = new TokenResponse(BEARER_PREFIX + token);
