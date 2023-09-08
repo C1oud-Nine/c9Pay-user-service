@@ -169,7 +169,6 @@ public class UserController implements UserControllerDocs {
      */
     @Override
     @RateLimiter(name = "Rate_limiter")
-    @GatewayValidation(API)
     @GetMapping("/serial-number")
     public ResponseEntity<?> getSerialNumber(@CookieValue(AUTHORIZATION_HEADER) String token){
         String serialNumber = jwtParser.getSerialNumberByToken(token);
