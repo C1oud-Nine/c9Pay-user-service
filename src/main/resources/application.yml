@@ -64,3 +64,5 @@ resilience4j:
         limitForPeriod: 3
         limitRefreshPeriod: 1s
         timeoutDuration: 2s
+symmetric:
+  key: ENC(esHO3I5yH+LVAHe3slss0iGcrnOKArvh)
