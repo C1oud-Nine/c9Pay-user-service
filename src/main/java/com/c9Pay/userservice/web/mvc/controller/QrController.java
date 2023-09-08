@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +55,7 @@ public class QrController implements QrControllerDocs {
      * @param token 사용자의 인증 토큰이 포함된 쿠키 값
      * @return QR 코드 생성 요청 결과를 포함하는 ResponseEntity 반환
      */
-    @GetMapping("/api/qr")
+    @GetMapping(value = "/api/qr",produces = MediaType.APPLICATION_JSON_VALUE)
     @GatewayValidation(API)
     @RateLimiter(name = "Rate_limiter")
     @Override
