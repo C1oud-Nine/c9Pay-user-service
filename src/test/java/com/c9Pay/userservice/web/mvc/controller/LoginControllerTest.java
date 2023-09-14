@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.BadCredentialsException;
 
@@ -42,7 +41,7 @@ class LoginControllerTest {
         ResponseEntity<?> responseEntity = userController.signUp(dto);
         LoginForm form = new LoginForm("aa", "bb");
         MockHttpServletResponse response = new MockHttpServletResponse();
-        User findUser = userService.findUserByUserId("aa");
+        User findUser = userService.findByUserId("aa");
         //when
         loginController.login(form, response);
         Cookie cookie = response.getCookie(AUTHORIZATION_HEADER);

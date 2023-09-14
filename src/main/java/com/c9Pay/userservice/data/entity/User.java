@@ -2,10 +2,9 @@ package com.c9Pay.userservice.data.entity;
 
 import com.c9Pay.userservice.data.dto.user.UserUpdateParam;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
@@ -20,6 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends BaseTimeEntity {
+
     @Override
     public boolean equals(UserUpdateParam user) {
         return (this.email.equals(user.getEmail())
@@ -66,5 +66,15 @@ public class User extends BaseTimeEntity {
      */
     public void encodePassword(String password){
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(User compare) {
+        return this.userId.equals(compare.userId) &&
+                this.email.equals(compare.getEmail()) &&
+                this.id.equals(compare.getId()) &&
+                this.password.equals(compare.getPassword())&&
+                this.serialNumber.equals(compare.getSerialNumber()) &&
+                this.username.equals(compare.getUsername());
     }
 }

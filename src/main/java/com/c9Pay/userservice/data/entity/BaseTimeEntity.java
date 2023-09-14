@@ -29,4 +29,6 @@ public abstract class BaseTimeEntity {
      * @return 동등하면 true, 그렇지 않으면 false
      */
     public abstract boolean equals(UserUpdateParam user);
+
+    public abstract boolean equals(User compare);
 }

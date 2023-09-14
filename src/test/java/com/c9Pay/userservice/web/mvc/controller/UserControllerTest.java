@@ -8,7 +8,6 @@ import com.c9Pay.userservice.security.jwt.JwtTokenUtil;
 import com.c9Pay.userservice.web.client.AuthClient;
 import com.c9Pay.userservice.web.client.CreditClient;
 import com.c9Pay.userservice.web.exception.exceptions.DuplicatedUserException;
-import com.c9Pay.userservice.web.exception.exceptions.IllegalTokenDetailException;
 import com.c9Pay.userservice.web.exception.exceptions.UserNotFoundException;
 import com.c9Pay.userservice.web.mvc.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -78,7 +77,7 @@ class UserControllerTest {
 
         //when
         ResponseEntity<?> first = userController.signUp(one);
-        User testA = userService.findUserByUserId("test1");
+        User testA = userService.findByUserId("test1");
         //then
         deleteAccount(testA.getSerialNumber().toString());
         assertThat(first.getStatusCode()).isEqualTo(OK);
@@ -94,7 +93,7 @@ class UserControllerTest {
         //given
         UserDto dto = new UserDto("testA","test", "testB", "test@test.test");
         userController.signUp(dto);
-        User findUser = userService.findUserByUserId("test");
+        User findUser = userService.findByUserId("test");
         //when
         String token = jwtTokenUtil.generateToken(String.valueOf(findUser.getId()));
         ResponseEntity<?> response = userController
@@ -114,7 +113,7 @@ class UserControllerTest {
         UserDto dto = new UserDto("testA", "test123",
                 "testB", "test@test.test");
         userController.signUp(dto);
-        User findUser = userService.findUserByUserId("test123");
+        User findUser = userService.findByUserId("test123");
         //when
         String token = jwtTokenUtil.generateToken(String.valueOf(findUser.getId()));
         ResponseEntity<?> response = userController.getUserDetail("Bearer+"+ token);
@@ -137,14 +136,14 @@ class UserControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         ResponseEntity<?> responseEntity = userController.signUp(dto);
         String serialNumber = requireNonNull(responseEntity.getBody()).toString();
-        User findUser=  userService.findUserByUserId("TEST");
+        User findUser=  userService.findByUserId("TEST");
         String token = jwtTokenUtil.generateToken(String.valueOf(findUser.getId()));
         HttpServletResponse response = new MockHttpServletResponse();
         //when
         ResponseEntity<?> deleteResponse = userController.deleteUser("Bearer+" + token, response);
         //then
         assertThat(deleteResponse.getStatusCode()).isEqualTo(OK);
-        assertThrows(UserNotFoundException.class,() ->userService.findUserByUserId("TEST"));
+        assertThrows(UserNotFoundException.class,() ->userService.findByUserId("TEST"));
         findAccount(serialNumber);
     }
 
@@ -156,20 +155,20 @@ class UserControllerTest {
         UserDto dto = new UserDto("Dummy", "Dummy","TEST11", "korea@japan.china");
         ResponseEntity<?> responseEntity = userController.signUp(dto);
         String serialNumber = requireNonNull(responseEntity.getBody()).toString();
-        User findUser=  userService.findUserByUserId("Dummy");
+        User findUser=  userService.findByUserId("Dummy");
         String token = jwtTokenUtil.generateToken(String.valueOf(findUser.getId()));
         HttpServletResponse response = new MockHttpServletResponse();
         UserUpdateParam param = new UserUpdateParam("aa","bb", "cc", "dd");
         //when
         ResponseEntity<?> updateResponse = userController.updateUserInfo("Bearer+" + token, param,response);
-        User updatedUser = userService.findUserByUserId("dd");
+        User updatedUser = userService.findByUserId("dd");
         //then
         assertThat(updateResponse.getStatusCode()).isEqualTo(OK);
         assertTrue(updatedUser.equals(param));
         assertTrue(passwordEncoder.matches("bb", updatedUser.getPassword()));
         deleteAccount(serialNumber);
         userService.deleteOneByName("aa");
-        assertThrows(UserNotFoundException.class,()-> userService.findUserByUserId("dd"));
+        assertThrows(UserNotFoundException.class,()-> userService.findByUserId("dd"));
         findAccount(serialNumber);
     }
 
@@ -180,7 +179,7 @@ class UserControllerTest {
         //given
         UserDto dto = new UserDto("Dummy", "Dummy2","TEST11", "korea@japan.china");
         ResponseEntity<?> signUpResponse = userController.signUp(dto);
-        User findUser = userService.findUserByUserId("Dummy2");
+        User findUser = userService.findByUserId("Dummy2");
         String token = jwtTokenUtil.generateToken(String.valueOf(findUser.getId()));
         //when
         ResponseEntity<?> serialNumber = userController.getSerialNumber("Bearer+" + token);

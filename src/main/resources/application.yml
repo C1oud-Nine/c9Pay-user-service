@@ -6,14 +6,12 @@ spring:
       enabled: true
       path: /h2-console
   datasource:
-    url: jdbc:h2:mem:user-service
-    username: ENC(yrUMw+QE8Br4j+ZJf5R/RA==)
-    password: #ENC(qyVsfasFWRdgcYn/XoQVqg==)
-
+    url: ENC(QlYAYNFz1Wqe++xMrypTlnwsZoCsj2u5YDqnSXA+Q43cjgoLBndeLiYqe8jQ3avIyOd0adEhN7Xs/zdLdVwKj3HRDcerK1BlZGx/6An3JEZGy51syStj66jYwTFRGSxf)
+    username: ENC(P0YpE5s27eFW0hFCz2OxjGndSH6aje0r)
+    password: ENC(P0YpE5s27eFW0hFCz2OxjGndSH6aje0r)
   jpa:
     hibernate:
-      ddlAuto: create
-    databasePlatform: org.hibernate.dialect.H2Dialect
+      ddlAuto: validate
     defer-datasource-initialization: true
 
 server:
@@ -49,12 +47,24 @@ management:
     tracing:
       endpoint: "http://localhost:9411/api/v2/spans"
 
+
+resilience4j:
+  ratelimiter:
+    configs:
+      default:
+        limitForPeriod: 3
+        limitRefreshPeriod: 1s
+        timeoutDuration: 2s
+symmetric:
+  key: ENC(esHO3I5yH+LVAHe3slss0iGcrnOKArvh)
+
+openapi:
+  service:
+    title: user-service docs
+    version: 1.0.0
+    url: http://localhost:8000
 springdoc:
-  packages-to-scan: com.c9Pay.userservice.web.mvc.controller
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
+  api-docs:
+    path: /v3/api-docs
   swagger-ui:
     path: /user-service/api/docs
-    display-request-duration: true
-    disable-swagger-default-url: true
-    operations-sorter: alpha

@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -72,7 +71,7 @@ public class UserService {
      * @return 조회된 사용자 객체
      * @throws UserNotFoundException 사용자가 존재하지 않을 경우 발생하는 예외
      */
-    public User findUserByUserId(String userId){
+    public User findByUserId(String userId){
         return userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
     }
 
