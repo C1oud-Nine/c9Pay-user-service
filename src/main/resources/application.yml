@@ -18,6 +18,7 @@ server:
   port: 8083
   shutdown: graceful
 
+
 eureka:
   client:
     registerWithEureka: true
@@ -47,6 +48,10 @@ management:
   zipkin:
     tracing:
       endpoint: "http://localhost:9411/api/v2/spans"
+  endpoints:
+    web:
+      exposure:
+        include: refresh,health,beans,httpexchanges
 
 
 resilience4j:
