@@ -52,7 +52,6 @@ public class LoginController implements LoginControllerDocs {
      * @return 로그인 성공 시 성공 메세지를 담은 ResponseEntity 반환
      */
     @Override
-    @RateLimiter(name = "Rate_limiter")
     @GatewayValidation(API)
     @PostMapping(value = "/api/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(@Valid @RequestBody LoginForm form, HttpServletResponse response){

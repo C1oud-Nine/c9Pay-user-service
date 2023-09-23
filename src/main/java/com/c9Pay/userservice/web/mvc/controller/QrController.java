@@ -57,7 +57,6 @@ public class QrController implements QrControllerDocs {
      */
     @GetMapping(value = "/api/qr",produces = MediaType.APPLICATION_JSON_VALUE)
     @GatewayValidation(API)
-    @RateLimiter(name = "Rate_limiter")
     @Override
     public ResponseEntity<?> createQr(@CookieValue(AUTHORIZATION_HEADER) String token){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");

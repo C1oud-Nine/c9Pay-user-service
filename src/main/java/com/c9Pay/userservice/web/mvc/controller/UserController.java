@@ -73,7 +73,6 @@ public class UserController implements UserControllerDocs {
      */
     @Override
     @GatewayValidation(API)
-    @RateLimiter(name = "Rate_limiter")
     @PostMapping(value = "/signup", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> signUp(@RequestBody @Valid UserDto form){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
@@ -99,7 +98,6 @@ public class UserController implements UserControllerDocs {
      * @return 특정 사용자의 상세 정보를 포함하는 ResponseEntity 반환
      */
     @Override
-    @RateLimiter(name = "Rate_limiter")
     @GatewayValidation(API)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUserDetail(@CookieValue(AUTHORIZATION_HEADER) String token){
@@ -125,7 +123,6 @@ public class UserController implements UserControllerDocs {
      */
     @Override
     @GatewayValidation(API)
-    @RateLimiter(name = "Rate_limiter")
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@CookieValue(AUTHORIZATION_HEADER) String token, HttpServletResponse response){
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
@@ -149,7 +146,6 @@ public class UserController implements UserControllerDocs {
      */
     @Override
     @GatewayValidation(API)
-    @RateLimiter(name = "Rate_limiter")
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUserInfo(@CookieValue(AUTHORIZATION_HEADER) String token,
                                             @Valid@RequestBody UserUpdateParam param,
@@ -169,7 +165,6 @@ public class UserController implements UserControllerDocs {
      * @return 현재 로그인한 사용자의 개체식별번호를 포함하는 ResponseEntity 반환
      */
     @Override
-    @RateLimiter(name = "Rate_limiter")
     @GetMapping(value = "/serial-number", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSerialNumber(@CookieValue(AUTHORIZATION_HEADER) String token){
         String serialNumber = jwtParser.getSerialNumberByToken(token);
@@ -182,7 +177,6 @@ public class UserController implements UserControllerDocs {
      * @return 사용자 아이디가 중복되지 않으면 OK응답, 중복될 경우 Bad Request 응답을 반환한다.
      */
     @Override
-    @RateLimiter(name = "Rate_limiter")
     @GatewayValidation(API)
     @GetMapping("/check-duplicate/{userId}")
     public ResponseEntity<?> checkDuplicated(@PathVariable("userId")String userId){

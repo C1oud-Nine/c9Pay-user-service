@@ -63,7 +63,6 @@ public class CreditController implements CreditControllerDocs {
      * @return 크레딧 충전이 성공한 경우 OK 응답을 반환
      */
     @Override
-    @RateLimiter(name = "Rate_limiter")
     @GatewayValidation(API)
     @PostMapping
     public ResponseEntity<?> chargeCredit(@Valid @RequestBody ChargeForm charge,
@@ -83,7 +82,6 @@ public class CreditController implements CreditControllerDocs {
      * @return 사용자의 현재 크레딧 정보를 담은 ResponseEntity 반환
      */
     @Override
-    @RateLimiter(name = "Rate_limiter")
     @GatewayValidation(API)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public  ResponseEntity<?> getCredit(@CookieValue(AUTHORIZATION_HEADER) String token){
