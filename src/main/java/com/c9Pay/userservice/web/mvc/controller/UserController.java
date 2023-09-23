@@ -40,18 +40,7 @@ import static com.c9Pay.userservice.data.dto.user.UserResponse.mapping;
 
 /**
  * 사용자 정보 처리에 대한 컨트롤러
- * @see com.c9Pay.userservice.web.client.AuthClient
- * @see com.c9Pay.userservice.web.client.CreditClient
- * @see com.c9Pay.userservice.data.entity.User
- * @see com.c9Pay.userservice.security.jwt.JwtTokenUtil
- * @see com.c9Pay.userservice.data.dto.auth.SerialNumberResponse
- * @see com.c9Pay.userservice.data.dto.user.UserDto
- * @see com.c9Pay.userservice.data.dto.user.UserUpdateParam
- * @see com.c9Pay.userservice.web.exception.exceptions.TokenGenerationFailureException
- * @see com.c9Pay.userservice.web.mvc.service.UserService
- * @see jakarta.servlet.http.Cookie
- * @see jakarta.servlet.http.HttpServletRequest
- * @see jakarta.servlet.http.HttpServletResponse
+
  */
 @Slf4j
 @RestController

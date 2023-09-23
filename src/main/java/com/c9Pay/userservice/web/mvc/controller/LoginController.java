@@ -28,13 +28,6 @@ import static com.c9Pay.userservice.constant.ServiceConstant.API;
 /**
  * 사용자 로그인을 처리하는 컨트롤러.
  *
- * @see com.c9Pay.userservice.constant.BearerConstant
- * @see com.c9Pay.userservice.constant.CookieConstant
- * @see com.c9Pay.userservice.data.dto.user.LoginForm
- * @see com.c9Pay.userservice.web.mvc.service.UserService
- * @see jakarta.servlet.http.Cookie
- * @see jakarta.servlet.http.HttpServletRequest
- * @see jakarta.servlet.http.HttpServletResponse
  */
 @Slf4j
 @RestController

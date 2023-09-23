@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * 인증서비스에서 받아올 사용자에게 응답될 토큰 정보를 담는 클래스
- *
- * @see com.c9Pay.userservice.web.client.AuthClient
  */
 @Schema(description = "QR 생성을 위한 토큰 정보")
 @Data@AllArgsConstructor@NoArgsConstructor
