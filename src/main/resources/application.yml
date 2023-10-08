@@ -6,6 +6,7 @@ spring:
       enabled: true
       path: /h2-console
   datasource:
+    hikari.maximum-pool-size: 3
     url: ENC(QlYAYNFz1Wqe++xMrypTlnwsZoCsj2u5YDqnSXA+Q43cjgoLBndeLiYqe8jQ3avIyOd0adEhN7Xs/zdLdVwKj3HRDcerK1BlZGx/6An3JEZGy51syStj66jYwTFRGSxf)
     username: ENC(P0YpE5s27eFW0hFCz2OxjGndSH6aje0r)
     password: ENC(P0YpE5s27eFW0hFCz2OxjGndSH6aje0r)
@@ -27,7 +28,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
   instance:
     prefer-ip-address: true
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+    instance-id: ${hostname}
 jwt:
   time: 1800000
   service-type: ENC(9vruXpL+mRox/n5yyNkQmg==)
