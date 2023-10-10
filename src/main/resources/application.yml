@@ -1,6 +1,6 @@
 spring:
   application:
-    name: user-service:${hostname}
+    name: user-service
   h2:
     console:
       enabled: true
